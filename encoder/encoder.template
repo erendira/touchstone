@@ -1,0 +1,44 @@
+heat_template_version: 2013-05-23
+
+description: |
+  A template implementation of a resource that establishes a Django webstack for encoding
+
+parameters:
+
+  image:
+    description: Rackspace Cloud Server Image (Distribution)
+    type: string
+    default: Ubuntu 13.10 (Saucy Salamander)
+    constraints:
+    - allowed_values:
+      - Ubuntu 13.10 (Saucy Salamander)
+      description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 13.10 (Saucy Salamander)
+
+  flavor:
+    description: Rackspace Cloud Server flavor (Size)
+    type: string
+    default: 4 GB Performance
+    constraints:
+    - allowed_values:
+      - 4 GB Performance
+      - 8 GB Performance
+      description: Must be a valid Rackspace Cloud Server flavor. Default is 4GB.
+
+  server_name:
+    type: string
+    default: RackspacePrivateCloudDemo
+    description: foobar
+    
+  install_script_url:
+    type: string
+    default: "https://raw.github.com/cloudnull/rcbops_allinone_inone/rax-stable/rcbops_allinone_inone.sh"
+    description: Location of the script for installing the Openstack Environment
+
+resources:
+
+  webapp_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: { get_param: flavor }
+      image: { get_param: image }
+      name: { get_param: server_name }
