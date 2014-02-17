@@ -20,14 +20,46 @@ parameters:
     default: 4 GB Performance
     constraints:
     - allowed_values:
+      - 1 GB Performance
+      - 2 GB Performance
       - 4 GB Performance
       - 8 GB Performance
       description: Must be a valid Rackspace Cloud Server flavor. Default is 4GB.
 
-  server_name:
+  frontend_server_name:
     type: string
-    default: RackspacePrivateCloudDemo
-    description: foobar
+    default: frontend
+    description: HTTP frontend server
+
+  webapp_server_name:
+    type: string
+    default: webapp
+    description: Django webapp
+
+  webapp_ip:
+    type: string
+    default: "0.0.0.0"
+    description: Webapp IPv4
+
+  queue_master_ip:
+    type: string
+    default: "0.0.0.0"
+    description: Queue Master IPv4
+
+  queue_worker1_ip:
+    type: string
+    default: "0.0.0.0"
+    description: Queue Worker #1 IPv4
+
+  queue_master_server_name:
+    type: string
+    default: queue_master
+    description: Queue master
+
+  queue_worker1_server_name:
+    type: string
+    default: queue_worker1
+    description: Queue worker #1
     
   install_script_url:
     type: string
@@ -36,9 +68,43 @@ parameters:
 
 resources:
 
+  frontend_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 1 GB Performance
+      image: { get_param: image }
+      name: { get_param: frontend_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            (cat | sudo tee /root/ip_addrs) << EOF
+            webapp: %webapp_ip%
+            queue_master: %queue_master_ip%
+            queue_worker1: %queue_worker1_ip%
+            EOF
+          params:
+            "%webapp_ip%": { get_attr: [ webapp_server, accessIPv4 ] }
+            "%queue_master_ip%": { get_attr: [ queue_master_server, accessIPv4 ] }
+            "%queue_worker1_ip%": { get_attr: [ queue_worker1_server, accessIPv4 ] }
+
   webapp_server:
     type: "Rackspace::Cloud::Server"
     properties:
-      flavor: { get_param: flavor }
+      flavor: 2 GB Performance
       image: { get_param: image }
-      name: { get_param: server_name }
+      name: { get_param: webapp_server_name }
+
+  queue_master_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 2 GB Performance
+      image: { get_param: image }
+      name: { get_param: queue_master_server_name }
+
+  queue_worker1_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 1 GB Performance
+      image: { get_param: image }
+      name: { get_param: queue_worker1_server_name }
