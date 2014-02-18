@@ -1,7 +1,7 @@
 heat_template_version: 2013-05-23
 
 description: |
-  A template implementation of a resource that establishes a Django webstack for encoding
+  A template that establishes a Django webstack for Encoding media
 
 parameters:
 
@@ -36,21 +36,6 @@ parameters:
     default: webapp
     description: Django webapp
 
-  webapp_ip:
-    type: string
-    default: "0.0.0.0"
-    description: Webapp IPv4
-
-  queue_master_ip:
-    type: string
-    default: "0.0.0.0"
-    description: Queue Master IPv4
-
-  queue_worker1_ip:
-    type: string
-    default: "0.0.0.0"
-    description: Queue Worker #1 IPv4
-
   queue_master_server_name:
     type: string
     default: queue_master
@@ -79,14 +64,12 @@ resources:
           template: |
             #!/bin/bash
             (cat | sudo tee /root/ip_addrs) << EOF
-            webapp: %webapp_ip%
-            queue_master: %queue_master_ip%
-            queue_worker1: %queue_worker1_ip%
+            webapp-public: %webapp_ip%
+            webapp-private: %webapp_ip_private%
             EOF
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, accessIPv4 ] }
-            "%queue_master_ip%": { get_attr: [ queue_master_server, accessIPv4 ] }
-            "%queue_worker1_ip%": { get_attr: [ queue_worker1_server, accessIPv4 ] }
+            "%webapp_ip_private%": { get_attr: [ webapp_server, privateIPv4 ] }
 
   webapp_server:
     type: "Rackspace::Cloud::Server"
@@ -94,6 +77,15 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: webapp_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            (cat | sudo tee /root/ip_addrs) << EOF
+            queue_master: %queue_master_ip%
+            EOF
+          params:
+            "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
 
   queue_master_server:
     type: "Rackspace::Cloud::Server"
@@ -101,6 +93,13 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: queue_master_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            (cat | sudo tee /root/ip_addrs) << EOF
+            foobar
+            EOF
 
   queue_worker1_server:
     type: "Rackspace::Cloud::Server"
@@ -108,3 +107,12 @@ resources:
       flavor: 1 GB Performance
       image: { get_param: image }
       name: { get_param: queue_worker1_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            (cat | sudo tee /root/ip_addrs) << EOF
+            queue_master: %queue_master_ip%
+            EOF
+          params:
+            "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
