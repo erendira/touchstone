@@ -3,7 +3,6 @@
 EXPECTEDARGS=1
 if [ $# -lt $EXPECTEDARGS ]; then
     echo "Usage: $0 <WEBAPP_IP>"
-    echo "Set servers in update.sh"
     exit 0
 fi
 
