@@ -3,12 +3,12 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import RequestContext
 #-------------------------------------------------------------------------------
-def converter(request):
+def converter_index(request):
     page = "converter"
     data = {
             'page': page,
             }
-    template = "converter/new.html"
+    template = "converter/index.html"
 
     if request.method == "GET":
         context_instance = RequestContext(request)

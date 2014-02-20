@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from settings import STATIC_ROOT
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -6,7 +7,8 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'encoder_proj.views.converter', name='converter_index'),
+    url(r'^$', include('converter.urls')),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': STATIC_ROOT}),
     url(r'^converter/', include('converter.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
