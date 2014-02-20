@@ -1,0 +1,10 @@
+*.log
+*.pot
+*.pyc
+vim*
+*.bak
+bin
+include
+lib
+local
+gunicorn.sh
