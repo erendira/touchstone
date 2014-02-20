@@ -23,7 +23,7 @@ sudo pip install django gunicorn pyrax
 
 # setup virtualenv for webapp
 PWD=`pwd`
-WEBAPP_PATH=$PWD/encoder
+WEBAPP_PATH=$PWD/django
 cd $WEBAPP_PATH
 virtualenv --no-site-packages .
 cd ../
@@ -44,8 +44,10 @@ sudo rm $GUNICORN > /dev/null 2>&1
 sudo rm /etc/supervisord.conf
 
 # setup gunicorn script from template
-sed "s#{WEBAPP_PATH}#$PWD/encoder#g" $GUNICORN_TEMPLATE > $GUNICORN
+sed "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" $GUNICORN_TEMPLATE > $GUNICORN
 chmod +x $GUNICORN
+
+sed -i "s#{WEBAPP_TEMPLATE_PATH}#$WEBAPP_PATH/templates#g" $WEBAPP_PATH/encoder_proj/settings.py
 
 # install supervisord
 PWD=`pwd`
