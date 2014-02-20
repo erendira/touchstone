@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+{% block title %}
+{% endblock %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cosmo/bootstrap.min.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}app.css" rel="stylesheet">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.js"></script>
+{% block javascript %}
+{% endblock %}
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="../" class="navbar-brand">Encoder</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav">
+                <li> <a href="../status/">Status</a> </li>
+                <!--
+                <li class="{# if page == 'exchange' #} active {# endif #}"><a href="{# url 'exchange' #}">Exchange</a></li>
+                <li class="divider"></li>
+                <li class="{# if page == 'calc' #} active {# endif #}"><a href="{# url 'calculator' 1 #}">Calculator</a></li>
+                <li class="divider"></li>
+                <li class="{# if page == 'balance' #} active {# endif #}"><a href="{# url 'balance' #}">Balance</a></li>
+                -->
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    {% block body %}
+    {% endblock %}
+</div>
+</body>
+</html>
