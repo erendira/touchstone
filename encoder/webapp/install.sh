@@ -47,8 +47,6 @@ sudo rm /etc/supervisord.conf
 sed "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" $GUNICORN_TEMPLATE > $GUNICORN
 chmod +x $GUNICORN
 
-sed -i "s#{WEBAPP_TEMPLATE_PATH}#$WEBAPP_PATH/templates#g" $WEBAPP_PATH/encoder_proj/settings.py
-
 # install supervisord
 PWD=`pwd`
 SUPERVISOR_CONF="/etc/supervisord.conf"
