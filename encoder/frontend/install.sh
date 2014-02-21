@@ -10,6 +10,7 @@ sudo apt-get install nginx htop -y
 PWD=`pwd`
 sudo cp -f $PWD/encoder /etc/nginx/sites-available/
 sudo ln -s -f /etc/nginx/sites-available/encoder /etc/nginx/sites-enabled/encoder
+sudo rm /etc/nginx/sites-enabled/default
 
 # start nginx
 sudo service nginx start
