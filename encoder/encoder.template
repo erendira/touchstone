@@ -26,6 +26,14 @@ parameters:
       - 8 GB Performance
       description: Must be a valid Rackspace Cloud Server flavor. Default is 4GB.
 
+  rax_username:
+    type: string
+    description: RAX Public Cloud Username
+
+  rax_apikey:
+    type: string
+    description: RAX Public Cloud API Key
+
   frontend_server_name:
     type: string
     default: frontend
@@ -63,13 +71,9 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            (cat | sudo tee /root/ip_addrs) << EOF
-            webapp-public: %webapp_ip%
-            webapp-private: %webapp_ip_private%
-            EOF
+            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/frontend.sh | sudo bash /dev/stdin %webapp_ip%
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, accessIPv4 ] }
-            "%webapp_ip_private%": { get_attr: [ webapp_server, privateIPv4 ] }
 
   webapp_server:
     type: "Rackspace::Cloud::Server"
@@ -81,38 +85,38 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            (cat | sudo tee /root/ip_addrs) << EOF
-            queue_master: %queue_master_ip%
-            EOF
+            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey%
           params:
-            "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
+            "%rax_username%": { get_param: rax_username }
+            "%rax_apikey%": { get_param: rax_apikey }
+            #"%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
 
-  queue_master_server:
-    type: "Rackspace::Cloud::Server"
-    properties:
-      flavor: 2 GB Performance
-      image: { get_param: image }
-      name: { get_param: queue_master_server_name }
-      user_data:
-        str_replace:
-          template: |
-            #!/bin/bash
-            (cat | sudo tee /root/ip_addrs) << EOF
-            foobar
-            EOF
+  #queue_master_server:
+  #  type: "Rackspace::Cloud::Server"
+  #  properties:
+  #    flavor: 2 GB Performance
+  #    image: { get_param: image }
+  #    name: { get_param: queue_master_server_name }
+  #    user_data:
+  #      str_replace:
+  #        template: |
+  #          #!/bin/bash
+  #          (cat | sudo tee /root/ip_addrs) << EOF
+  #          foobar
+  #          EOF
 
-  queue_worker1_server:
-    type: "Rackspace::Cloud::Server"
-    properties:
-      flavor: 1 GB Performance
-      image: { get_param: image }
-      name: { get_param: queue_worker1_server_name }
-      user_data:
-        str_replace:
-          template: |
-            #!/bin/bash
-            (cat | sudo tee /root/ip_addrs) << EOF
-            queue_master: %queue_master_ip%
-            EOF
-          params:
-            "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
+  #queue_worker1_server:
+  #  type: "Rackspace::Cloud::Server"
+  #  properties:
+  #    flavor: 1 GB Performance
+  #    image: { get_param: image }
+  #    name: { get_param: queue_worker1_server_name }
+  #    user_data:
+  #      str_replace:
+  #        template: |
+  #          #!/bin/bash
+  #          (cat | sudo tee /root/ip_addrs) << EOF
+  #          queue_master: %queue_master_ip%
+  #          EOF
+  #        params:
+  #          "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
