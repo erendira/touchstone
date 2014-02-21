@@ -54,11 +54,6 @@ parameters:
     default: queue_worker1
     description: Queue worker #1
     
-  install_script_url:
-    type: string
-    default: "https://raw.github.com/cloudnull/rcbops_allinone_inone/rax-stable/rcbops_allinone_inone.sh"
-    description: Location of the script for installing the Openstack Environment
-
 resources:
 
   frontend_server:
