@@ -28,10 +28,12 @@ parameters:
 
   rax_username:
     type: string
+    required: true
     description: RAX Public Cloud Username
 
   rax_apikey:
     type: string
+    required: true
     description: RAX Public Cloud API Key
 
   frontend_server_name:
