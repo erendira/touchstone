@@ -49,21 +49,8 @@ chmod +x $GUNICORN
 
 # install supervisord
 PWD=`pwd`
-SUPERVISOR_CONF="/etc/supervisord.conf"
-if [ ! -f "$SUPERVISOR_CONF" ]
-then
-    sed "s#{WEBAPP_PATH}#$PWD#g" supervisord_template.conf | \
-        sudo tee /etc/supervisord.conf > /dev/null
-else
-    WEBAPP_PATH=$PWD
-(cat | sudo tee -a /etc/supervisord.conf) << EOF
-
-[program:gunicorn]
-command = /bin/bash $WEBAPP_PATH/gunicorn.sh
-;stderr_logfile = /var/log/supervisord/gunicorn-stderr.log
-;stdout_logfile = /var/log/supervisord/gunicorn-stdout.log
-EOF
-fi
+sed "s#{WEBAPP_PATH}#$PWD#g" supervisord_template.conf | \
+    sudo tee /etc/supervisord.conf > /dev/null
 
 sudo mkdir -p /var/log/gunicorn
 sudo mkdir -p /var/log/supervisord
