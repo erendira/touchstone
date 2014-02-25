@@ -2,16 +2,14 @@
 
 EXPECTEDARGS=4
 if [ $# -lt $EXPECTEDARGS ]; then
-    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <MYSQL_PASS> <DATA_MASTER_IP>"
+    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <DATA_MASTER_IP> <MYSQL_PASS>"
     exit 0
 fi
 
 RAX_USERNAME=$1
 RAX_APIKEY=$2
-MYSQL_PASS=$3
-DATA_MASTER_IP=$4
-MYSQL_DB="encoder"
-MYSQL_USER="rax"
+DATA_MASTER_IP=$3
+MYSQL_PASS=$4
 
 # setup & install mysql client
 sudo apt-get update
