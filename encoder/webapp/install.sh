@@ -1,13 +1,15 @@
 #!/bin/bash
 
-EXPECTEDARGS=2
+EXPECTEDARGS=4
 if [ $# -lt $EXPECTEDARGS ]; then
-    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY>"
+    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <MYSQL_PASS> <DATA_MASTER_IP>"
     exit 0
 fi
 
 RAX_USERNAME=$1
 RAX_APIKEY=$2
+MYSQL_PASS=$3
+DATA_MASTER_IP=$4
 
 # update apt repos
 sudo apt-get update

@@ -36,6 +36,12 @@ parameters:
     required: true
     description: RAX Public Cloud API Key
 
+  mysql_pass:
+    type: string
+    required: true
+    default: password123
+    description: MYSQL Root & RAX user password
+
   frontend_server_name:
     type: string
     default: frontend
@@ -46,14 +52,14 @@ parameters:
     default: webapp
     description: Django webapp
 
-  queue_master_server_name:
+  data_master_server_name:
     type: string
-    default: queue_master
+    default: data_master
     description: Queue master
 
-  queue_worker1_server_name:
+  data_worker1_server_name:
     type: string
-    default: queue_worker1
+    default: data_worker1
     description: Queue worker #1
     
 resources:
@@ -82,38 +88,39 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey%
+            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
-            #"%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
+            "%data_master_ip%": { get_attr: [ data_master_server, privateIPv4 ] }
+            "%mysql_pass%": { get_param: mysql_pass }
 
-  #queue_master_server:
-  #  type: "Rackspace::Cloud::Server"
-  #  properties:
-  #    flavor: 2 GB Performance
-  #    image: { get_param: image }
-  #    name: { get_param: queue_master_server_name }
-  #    user_data:
-  #      str_replace:
-  #        template: |
-  #          #!/bin/bash
-  #          (cat | sudo tee /root/ip_addrs) << EOF
-  #          foobar
-  #          EOF
+  data_master_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 2 GB Performance
+      image: { get_param: image }
+      name: { get_param: data_master_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/data_master.sh | sudo bash /dev/stdin %mysql_pass%
+          params:
+            "%mysql_pass%": { get_param: mysql_pass }
 
-  #queue_worker1_server:
+  #data_worker1_server:
   #  type: "Rackspace::Cloud::Server"
   #  properties:
   #    flavor: 1 GB Performance
   #    image: { get_param: image }
-  #    name: { get_param: queue_worker1_server_name }
+  #    name: { get_param: data_worker1_server_name }
   #    user_data:
   #      str_replace:
   #        template: |
   #          #!/bin/bash
   #          (cat | sudo tee /root/ip_addrs) << EOF
-  #          queue_master: %queue_master_ip%
+  #          data_master: %data_master_ip%
   #          EOF
   #        params:
-  #          "%queue_master_ip%": { get_attr: [ queue_master_server, privateIPv4 ] }
+  #          "%data_master_ip%": { get_attr: [ data_master_server, privateIPv4 ] }
