@@ -8,5 +8,4 @@ git clone https://github.com/metral/touchstone.git ~/touchstone
 
 cd ~/touchstone/encoder/data_master
 
-./install_db.sh $MYSQL_PASS
-./install_queue.sh
+./install.sh $MYSQL_PASS

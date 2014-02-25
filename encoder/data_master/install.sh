@@ -41,3 +41,8 @@ echo "MySQL DB: $MYSQL_DB"
 echo "MySQL User: $MYSQL_USER"
 echo "MySQL Password: $MYSQL_PASS"
 echo "#################################################"
+
+
+# install gearman
+sudo apt-get update
+sudo apt-get install gearman-job-server -y
