@@ -22,6 +22,21 @@ sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo pip install gearman pyrax
 
+# install ffmpeg & deps
+sudo apt-get install python-sphinx -y
+
+wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
+tar xvf ffmpeg*
+mv ffmpeg*/ff* /usr/local/bin/
+mv ffmpeg*/qt* /usr/local/bin/
+rm -rf ffmpeg*
+
+git clone https://github.com/senko/python-video-converter.git
+cd python-video-converter
+python setup.py install
+cd ../
+rm -rf python-video-converter
+
 # pyrax creds for RAX
 (cat | sudo tee ~/pyrax_rc) << EOF
 [rackspace_cloud]
