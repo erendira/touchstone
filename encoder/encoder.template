@@ -112,7 +112,7 @@ resources:
   data_worker1_server:
     type: "Rackspace::Cloud::Server"
     properties:
-      flavor: 1 GB Performance
+      flavor: 4 GB Performance
       image: { get_param: image }
       name: { get_param: data_worker1_server_name }
       user_data:
