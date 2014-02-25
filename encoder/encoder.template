@@ -109,18 +109,19 @@ resources:
           params:
             "%mysql_pass%": { get_param: mysql_pass }
 
-  #data_worker1_server:
-  #  type: "Rackspace::Cloud::Server"
-  #  properties:
-  #    flavor: 1 GB Performance
-  #    image: { get_param: image }
-  #    name: { get_param: data_worker1_server_name }
-  #    user_data:
-  #      str_replace:
-  #        template: |
-  #          #!/bin/bash
-  #          (cat | sudo tee /root/ip_addrs) << EOF
-  #          data_master: %data_master_ip%
-  #          EOF
-  #        params:
-  #          "%data_master_ip%": { get_attr: [ data_master_server, privateIPv4 ] }
+  data_worker1_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 1 GB Performance
+      image: { get_param: image }
+      name: { get_param: data_worker1_server_name }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
+          params:
+            "%rax_username%": { get_param: rax_username }
+            "%rax_apikey%": { get_param: rax_apikey }
+            "%data_master_ip%": { get_attr: [ data_master_server, privateIPv4 ] }
+            "%mysql_pass%": { get_param: mysql_pass }
