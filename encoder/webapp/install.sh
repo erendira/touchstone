@@ -58,6 +58,11 @@ sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
     env_settings_template.py | \
     tee django/encoder_proj/env_settings.py > /dev/null
 
+# sync db
+cd django
+python manage.py syncdb --noinput
+cd ../
+
 # install supervisord
 PWD=`pwd`
 sed "s#{WEBAPP_PATH}#$PWD#g" supervisord_template.conf | \
