@@ -125,3 +125,9 @@ resources:
             "%rax_apikey%": { get_param: rax_apikey }
             "%data_master_ip%": { get_attr: [ data_master_server, privateIPv4 ] }
             "%mysql_pass%": { get_param: mysql_pass }
+
+outputs:
+
+  frontend_url:
+      value: { get_attr: [ frontend_server, accessIPv4 ] }
+      description: The landing page url for the Encoder webapp
