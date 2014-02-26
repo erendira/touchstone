@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from encoder_proj import env_settings
+import sys
 #-------------------------------------------------------------------------------
 def converter_index(request):
     page = "converter"
@@ -26,5 +28,6 @@ def converter_index(request):
             else:
                 dest.write(file.read())
             dest.close()
+            #print >>sys.stderr, env_settings.GEARMAN_SERVER
         return HttpResponseRedirect('/')
 #-------------------------------------------------------------------------------

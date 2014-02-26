@@ -54,6 +54,7 @@ rm django/encoder_proj/env_settings.py
 DJANGO_SECRET_KEY=`tr -dc "[:alpha:]" < /dev/urandom | head -c 64`
 sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
     -e "s#{MYSQL_HOST}#$DATA_MASTER_IP#g" \
+    -e "s#{GEARMAN_SERVER}#$DATA_MASTER_IP#g" \
     -e "s#{DJANGO_SECRET_KEY}#$DJANGO_SECRET_KEY#g" \
     env_settings_template.py | \
     tee django/encoder_proj/env_settings.py > /dev/null
