@@ -1,5 +1,6 @@
 # Django settings for encoder_proj project.
 import os
+import env_settings
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -10,16 +11,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': os.environ['MYSQL_DB_NAME'],
-#        'USER': os.environ['MYSQL_DB_USER'],
-#        'PASSWORD': os.environ['MYSQL_DB_PASSWORD'],
-#        'HOST': os.environ['MYSQL_DB_HOST'],
-#        'PORT': os.environ['MYSQL_DB_PORT'],
-#    }
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env_settings.MYSQL_DB,
+        'USER': env_settings.MYSQL_USER,
+        'PASSWORD': env_settings.MYSQL_PASSWORD,
+        'HOST': env_settings.MYSQL_HOST,
+        'PORT': env_settings.MYSQL_PORT,
+    }
+}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -83,7 +84,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = "u8flClhnSK4957JF3sX4Vf8BSZKm7erGuLWr95UuudDLmBxWnfBkYtf1j4vGNzce"
+SECRET_KEY = env_settings.DJANGO_SECRET_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (

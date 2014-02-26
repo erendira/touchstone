@@ -17,7 +17,7 @@ sudo apt-get update
 # install deps
 sudo apt-get install htop -y
 
-sudo apt-get install python-setuptools -y
+sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo apt-get install python-virtualenv -y
 
@@ -50,13 +50,13 @@ sed "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" $GUNICORN_TEMPLATE > $GUNICORN
 chmod +x $GUNICORN
 
 # setup environmental settings
-rm ./env_settings.py
+rm django/encoder_proj/env_settings.py
 DJANGO_SECRET_KEY=`tr -dc "[:alpha:]" < /dev/urandom | head -c 64`
 sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
     -e "s#{MYSQL_HOST}#$DATA_MASTER_IP#g" \
     -e "s#{DJANGO_SECRET_KEY}#$DJANGO_SECRET_KEY#g" \
     env_settings_template.py | \
-    tee env_settings.py > /dev/null
+    tee django/encoder_proj/env_settings.py > /dev/null
 
 # install supervisord
 PWD=`pwd`
