@@ -41,3 +41,25 @@ rm -rf python-video-converter
 username = $RAX_USERNAME
 api_key = $RAX_APIKEY
 EOF
+
+# setup environmental settings
+rm env_settings.py
+sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
+    -e "s#{MYSQL_HOST}#$DATA_MASTER_IP#g" \
+    -e "s#{GEARMAN_SERVER}#$DATA_MASTER_IP#g" \
+    env_settings_template.py | \
+    tee env_settings.py > /dev/null
+
+# install supervisord
+sudo rm /etc/supervisord.conf
+PWD=`pwd`
+sed "s#{ENCODER_PATH}#$PWD#g" supervisord_template.conf | \
+        sudo tee /etc/supervisord.conf > /dev/null
+
+sudo mkdir -p /var/log/supervisord
+sudo pip install supervisor
+
+# start supervisord
+sudo supervisorctl stop all
+sudo killall -9 supervisord
+sudo supervisord -c /etc/supervisord.conf

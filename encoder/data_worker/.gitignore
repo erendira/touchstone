@@ -1,0 +1,6 @@
+*.log
+*.pot
+*.pyc
+vim*
+*.bak
+env_settings.py
