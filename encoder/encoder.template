@@ -74,7 +74,7 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/frontend.sh | sudo bash /dev/stdin %webapp_ip%
+            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip%
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, accessIPv4 ] }
 
@@ -88,7 +88,7 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
@@ -105,7 +105,7 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/data_master.sh | sudo bash /dev/stdin %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass%
           params:
             "%mysql_pass%": { get_param: mysql_pass }
 
@@ -119,7 +119,7 @@ resources:
         str_replace:
           template: |
             #!/bin/bash
-            curl https://raw.github.com/metral/touchstone/master/encoder/heat_installs/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
