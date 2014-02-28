@@ -50,7 +50,6 @@ def converter_index(request):
     parsed_uri = urlparse(cf_public_endpoint)
     path = '{uri.path}/'.format(uri=parsed_uri)
 
-
     prefix = str(int(time())) + "_" + get_random_str(8) + "_"
     cf_path = path + container
     redirect_url = "https://" + request.META['SERVER_NAME'] + "/status/submitted"
