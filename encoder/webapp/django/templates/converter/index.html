@@ -6,12 +6,21 @@
 
 {% block body %}
 
-<form class="form-horizontal form-medium" enctype="multipart/form-data" action="" method="POST" id="encode-form">{% csrf_token %}
+<form class="form-horizontal form-medium" enctype="multipart/form-data"
+    action="{{ cf_url }}" method="POST" id="encode-form">{% csrf_token %}
+    <input type="hidden" name="redirect" value="{{ redirect_url }}" />
+    <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
+    <input type="hidden" name="max_file_count" value="{{ max_file_count }}" />
+    <input type="hidden" name="expires" value="{{ expires }}" />
+    <input type="hidden" name="signature" value="{{ sig }}" />
+
     <div class="control-group">
         <label for="media-file">Media File:</label>
-        <input type="file" name="media-file" id="media-file"/>
+        <input type="file" name="file1" id="file1"/>
     </div>
+
     </br>
+
     <input type="submit" value="Encode" class="btn btn-primary btn-md"/>
 </form>
 
