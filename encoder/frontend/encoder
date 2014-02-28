@@ -3,7 +3,11 @@ upstream backend  {
 }
 
 server {
-    listen 80;
+    listen 443;
+
+    ssl on;
+    ssl_certificate /etc/nginx/ssl/server.crt;
+    ssl_certificate_key /etc/nginx/ssl/server.key; 
 
     # declare proxy params and values to forward to your gunicorn webserver
     proxy_pass_request_headers on;
@@ -29,4 +33,9 @@ server {
         proxy_pass http://backend; # the actual nginx directive to 
                                            # forward the request
     }
+}
+
+server {
+    listen 80;
+    rewrite ^ https://$host$request_uri? permanent;
 }
