@@ -21,7 +21,7 @@ sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo apt-get install python-virtualenv -y
 
-sudo pip install django gunicorn pyrax
+sudo pip install django gunicorn pyrax jsonfield
 
 # setup virtualenv for webapp
 PWD=`pwd`
