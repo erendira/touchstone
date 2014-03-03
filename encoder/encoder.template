@@ -30,16 +30,19 @@ parameters:
     type: string
     required: true
     description: RAX Public Cloud Username
+    hidden: true
 
   rax_apikey:
     type: string
     required: true
     description: RAX Public Cloud API Key
+    hidden: true
 
   mysql_pass:
     type: string
     required: true
     default: password123
+    hidden: true
     description: MYSQL Root & RAX user password
 
   frontend_server_name:
