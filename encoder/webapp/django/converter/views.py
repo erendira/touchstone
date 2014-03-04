@@ -24,8 +24,8 @@ pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
 
-meta = {"x-account-meta-temp-url-key": "rackspace_rocks"}
-cf.set_account_metadata(meta)
+#meta = {"x-account-meta-temp-url-key": "rackspace_rocks"}
+#cf.set_account_metadata(meta)
 #-------------------------------------------------------------------------------
 def converter_index(request):
     upload_container = cf.create_container("upload")
@@ -34,16 +34,16 @@ def converter_index(request):
     completed_container.make_public(ttl=1200)
 
     origin = "https://" + request.META['SERVER_NAME']
+    #origin = "http://" + request.META['SERVER_NAME'] + ":" + request.META['SERVER_PORT']
     upload_container.set_metadata({'Access-Control-Allow-Origin': origin})
 
     unique_id = str(uuid.uuid4())
     expires = 60*60*3
-    key = cf.get_account_metadata()['x-account-meta-temp-url-key']
 
     upload_url = cf.get_temp_url(\
-            upload_container, unique_id, expires, method='PUT', key=key)
+            upload_container, unique_id, expires, method='PUT')
     download_url = cf.get_temp_url(\
-            upload_container, unique_id, expires, method='GET', key=key)
+            upload_container, unique_id, expires, method='GET')
 
     redirect_url = "/converter/uploaded/?unique_id=" + unique_id
 
@@ -66,6 +66,8 @@ def uploaded(request):
     filename = request.GET['filename']
     download_url = base64.b64decode(request.GET['b64_download_url']) +\
             "&filename=" + filename
+
+    print >>sys.stderr, unique_id, download_url
 
     if unique_id and download_url:
         messages.add_message(request, messages.SUCCESS, 'job_created_success')

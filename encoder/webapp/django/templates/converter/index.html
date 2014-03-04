@@ -33,32 +33,33 @@ var xhr_with_progress = function() {
 };
 
 $(document).ready(function() {
+    $("#upfile").on('change', function (e) {
+        var fr = new FileReader();
+        var filename;
+        fr.onload = function(e) {
+            $.ajax({
+                xhr: xhr_with_progress,
+                url:"{{ upload_url }}",
+                type: 'PUT',
+                cache: false,
+                data: fr.result,
+                processData: false,
 
-    $('#upfile').change(function () {
-    sendFile(this.files[0]);
+                success: function (data) {
+                var success_url = "{{ redirect_url }}" + "&b64_download_url=" + 
+                    "{{ b64_download_url }}" + "&filename=" + filename
+                    window.location = success_url
+                },
+
+                error: function (data) {
+                }
+            });
+        };
+        file = this.files[0];
+        filename = file.name
+        fr.readAsArrayBuffer(this.files[0]);
     });
-
 });
-
-function sendFile(file) {
-    $.ajax({
-        xhr: xhr_with_progress,
-        url:"{{ upload_url }}",
-        type: 'PUT',
-        cache: false,
-        data: file,
-        processData: false,
-
-        success: function (data) {
-        var success_url = "{{ redirect_url }}" + "&b64_download_url=" + 
-            "{{ b64_download_url }}" + "&filename=" + file.name
-            window.location = success_url
-        },
-
-        error: function (data) {
-        }
-    });
-};
 
 </script>
 
