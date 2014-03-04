@@ -42,9 +42,9 @@ def converter_index(request):
     upload_url = cf.get_temp_url(\
             upload_container, filename, expires, method='PUT', key=key)
     download_url = cf.get_temp_url(\
-            completed_container, filename, expires, method='GET', key=key)
+            upload_container, filename, expires, method='GET', key=key)
 
-    redirect_url = origin + "/status/submitted/" + filename
+    redirect_url = origin + "/status/uploaded/" + filename
 
     data = {
             'upload_url': upload_url,
@@ -52,6 +52,8 @@ def converter_index(request):
             'redirect_url': redirect_url,
             }
     template = "converter/index.html"
+
+    print >>sys.stderr, download_url
 
     if request.method == "GET":
         context_instance = RequestContext(request)

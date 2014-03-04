@@ -3,5 +3,5 @@ from status import views
 
 urlpatterns = patterns('',
         url(r'^$', views.status_index, name='status_index'),
-        url(r'^submitted/(?P<filename>\w+)', views.submitted, name='submitted'),
+        url(r'^uploaded/(?P<filename>\w+)', views.uploaded, name='uploaded'),
 )

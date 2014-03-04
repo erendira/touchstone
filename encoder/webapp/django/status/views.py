@@ -18,9 +18,9 @@ def status_index(request):
                 template, data, context_instance = context_instance)
         return rendered_response
 #-------------------------------------------------------------------------------
-def submitted(request, filename):
+def uploaded(request, filename):
     if filename:
-        messages.add_message(request, messages.SUCCESS, 'job_submit_success')
+        messages.add_message(request, messages.SUCCESS, 'job_created_success')
         return HttpResponseRedirect(reverse('status_index'))
     else:
         return HttpResponseRedirect(reverse('converter_index'))
