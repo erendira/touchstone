@@ -2,72 +2,8 @@ body {
     padding: 30px 30px 30px 30px;
 }
 
-.form-horizontal .control-label {
-    text-align: left;
-    width: 120px;
-}
-
-.form-horizontal .controls {
-    margin-left: 0px;
-}
-
-.form-horizontal .control-group {
-    margin-bottom: 10px;
-}
-
-.popover {
-    width:auto;
-}
-
-.alert-processing {
-    width:200px;
-}
-
 body {
     padding-top: 60px; /* offset for nav bar */
-}
-
-.welcome {
-    padding-top: 160px; /* offset for nav bar */
-    text-align:center;
-}
-
-.account-state {
-    position:absolute;
-    top: 0;
-    right: 55px
-}
-
-.sign-in {
-    margin:0 auto;
-    padding-top: 55px;
-    width: auto;
-    width: 200px;
-}
-
-.align-right {
-    float:right;    
-    text-align:center;
-}
-
-.alert-sign-in {
-    margin:0 auto;
-    text-align:center; 
-    width:200px;
-}
-
-.button {
-    margin:0 auto;
-    text-align:center; 
-    width:255px;
-}
-
-.table-nonfluid {
-    width: auto;
-}
-
-.table-cb {
-    float:left;
 }
 
 .navbar-brand {
