@@ -36,7 +36,7 @@ def converter_index(request):
     upload_container.set_metadata({'Access-Control-Allow-Origin': origin})
 
     filename = str(uuid.uuid4())
-    expires = 1200
+    expires = 60*60*2
     key = cf.get_account_metadata()['x-account-meta-temp-url-key']
 
     upload_url = cf.get_temp_url(\
