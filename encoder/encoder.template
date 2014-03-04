@@ -17,7 +17,7 @@ parameters:
   flavor:
     description: Rackspace Cloud Server flavor (Size)
     type: string
-    default: 4 GB Performance
+    default: 2 GB Performance
     constraints:
     - allowed_values:
       - 1 GB Performance
