@@ -7,6 +7,7 @@ from encoder_proj import env_settings
 from hashlib import sha1
 from time import time
 from urlparse import urlparse
+import base64
 import hmac
 import MySQLdb
 import os
@@ -35,25 +36,24 @@ def converter_index(request):
     origin = "https://" + request.META['SERVER_NAME']
     upload_container.set_metadata({'Access-Control-Allow-Origin': origin})
 
-    filename = str(uuid.uuid4())
-    expires = 60*60*2
+    unique_id = str(uuid.uuid4())
+    expires = 60*60*3
     key = cf.get_account_metadata()['x-account-meta-temp-url-key']
 
     upload_url = cf.get_temp_url(\
-            upload_container, filename, expires, method='PUT', key=key)
+            upload_container, unique_id, expires, method='PUT', key=key)
     download_url = cf.get_temp_url(\
-            upload_container, filename, expires, method='GET', key=key)
+            upload_container, unique_id, expires, method='GET', key=key)
 
-    redirect_url = "/converter/uploaded/" + filename
+    redirect_url = "/converter/uploaded/?unique_id=" + unique_id
 
     data = {
             'upload_url': upload_url,
-            'download_url': download_url,
+            'b64_download_url': base64.b64encode(download_url),
             'redirect_url': redirect_url,
             }
     template = "converter/index.html"
 
-    print >>sys.stderr, download_url
 
     if request.method == "GET":
         context_instance = RequestContext(request)
@@ -61,8 +61,13 @@ def converter_index(request):
                 template, data, context_instance = context_instance)
         return rendered_response
 #-------------------------------------------------------------------------------
-def uploaded(request, filename):
-    if filename:
+def uploaded(request):
+    unique_id = request.GET['unique_id']
+    filename = request.GET['filename']
+    download_url = base64.b64decode(request.GET['b64_download_url']) +\
+            "&filename=" + filename
+
+    if unique_id and download_url:
         messages.add_message(request, messages.SUCCESS, 'job_created_success')
         return HttpResponseRedirect(reverse('status_index'))
     else:

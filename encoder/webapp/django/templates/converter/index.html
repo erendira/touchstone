@@ -50,7 +50,9 @@ function sendFile(file) {
         processData: false,
 
         success: function (data) {
-            window.location = "{{ redirect_url }}"
+        var success_url = "{{ redirect_url }}" + "&b64_download_url=" + 
+            "{{ b64_download_url }}" + "&filename=" + file.name
+            window.location = success_url
         },
 
         error: function (data) {
