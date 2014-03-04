@@ -35,22 +35,7 @@ class Utils:
         None
 #-------------------------------------------------------------------------------
     def encode_job(self, gearman_worker, gearman_job):
-        formats = { 
-                'mkv': ('aac', 'h264'),
-                #'ogg': ('vorbis', 'theora'),
-                #'avi': ('aac', 'mpeg2'),
-                'webm': ('vorbis', 'vp8')
-                }
-
-        for format,codecs in formats.items():
-            conv = c.convert(video, 'output.' + format, {
-                'format': format,
-                'audio': { 'codec': codecs[0] },
-                'video': { 'codec': codecs[1] }
-                })
-
-            for timecode in conv:
-                print "Converting (%f) ...\r" % timecode
+        print "In encode job" 
         
         return None
 #-------------------------------------------------------------------------------
