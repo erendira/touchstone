@@ -5,23 +5,59 @@
 {% endblock %}
 
 {% block body %}
+<div class="container">
 
-<form class="form-horizontal form-medium" enctype="multipart/form-data"
-    action="{{ cf_url }}" method="POST" id="encode-form">{% csrf_token %}
-    <input type="hidden" name="redirect" value="{{ redirect_url }}" />
-    <input type="hidden" name="max_file_size" value="{{ max_file_size }}" />
-    <input type="hidden" name="max_file_count" value="{{ max_file_count }}" />
-    <input type="hidden" name="expires" value="{{ expires }}" />
-    <input type="hidden" name="signature" value="{{ sig }}" />
+    <p>
+    <label>Pick a file to upload
+        <input id="upfile" type="file" name="upfile" />
+    </label>
 
-    <div class="control-group">
-        <label for="media-file">Media File:</label>
-        <input type="file" name="file1" id="file1"/>
+    <div id="progress-bar" class="progress">
+        <div class="progress-bar"></div>
     </div>
 
-    </br>
+</div>
 
-    <input type="submit" value="Encode" class="btn btn-primary btn-md"/>
-</form>
+<script type="text/javascript">
+
+// Custom jQuery xhr instance to support our progress bar.
+var xhr_with_progress = function() {
+    var xhr = new window.XMLHttpRequest();
+    xhr.upload.addEventListener("progress",
+        function(evt) {
+            if (!evt.lengthComputable) return;
+            var percentComplete = evt.loaded / evt.total;
+            $("#progress-bar div.progress-bar").css('width', String(100*percentComplete) + "%");
+        }, false);
+    return xhr;
+};
+
+$(document).ready(function() {
+
+    $('#upfile').change(function () {
+    sendFile(this.files[0]);
+    });
+
+});
+
+function sendFile(file) {
+    $.ajax({
+        xhr: xhr_with_progress,
+        url:"{{ upload_url }}",
+        type: 'PUT',
+        cache: false,
+        data: file,
+        processData: false,
+
+        success: function (data) {
+            window.location = "{{ redirect_url }}"
+        },
+
+        error: function (data) {
+        }
+    });
+};
+
+</script>
 
 {% endblock %}

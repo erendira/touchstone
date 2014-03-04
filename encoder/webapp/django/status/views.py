@@ -18,11 +18,8 @@ def status_index(request):
                 template, data, context_instance = context_instance)
         return rendered_response
 #-------------------------------------------------------------------------------
-def submitted(request):
-    status = int(request.GET['status'])
-    message = request.GET['message']
-
-    if status == 201:
+def submitted(request, filename):
+    if filename:
         messages.add_message(request, messages.SUCCESS, 'job_submit_success')
         return HttpResponseRedirect(reverse('status_index'))
     else:
