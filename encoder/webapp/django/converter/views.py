@@ -11,8 +11,7 @@ import uuid
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
 creds_file = os.path.expanduser("~/pyrax_rc")
-region = "ORD"
-pyrax.set_credential_file(creds_file, region)
+pyrax.set_credential_file(creds_file, "ORD")
 
 cf = pyrax.cloudfiles
 upload_cont_name = "upload"
