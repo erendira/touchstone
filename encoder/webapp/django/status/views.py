@@ -4,11 +4,13 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from converter.models import EncodingJob
 import sys
 #-------------------------------------------------------------------------------
 def status_index(request):
 
     data = {
+            'jobs': EncodingJob.objects.all().order_by('-created_at')
             }
     template = "status/index.html"
 

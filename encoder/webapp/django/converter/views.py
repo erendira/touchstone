@@ -61,7 +61,7 @@ def uploaded(request):
                 'filename': filename,
                 'status': "submitted",
                 'urls': {
-                    'orig': download_url,
+                    'original': download_url,
                     },
                 }
         create_encoding_job(job_data)

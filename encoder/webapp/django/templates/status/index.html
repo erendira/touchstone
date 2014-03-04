@@ -20,6 +20,42 @@
 $(".alert").delay(4500).fadeOut();
 </script>
 
-Status Index
+</br>
+
+{% if jobs %}
+    <center>
+        <table class="table table-striped table-bordered table-nonfluid">
+            <tr>
+                <th>UUID</th>
+                <th>Filename</th>
+                <th>Job Status</th>
+                <th>URLs</th>
+                <th>Created At</th>
+            </tr>
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    {{ job.orig_uuid }}
+                </td>
+                <td>
+                    {{ job.filename }}
+                </td>
+                <td style="text-transform: capitalize">
+                    {{ job.status }}
+                </td>
+                <td style="text-transform: capitalize">
+                    {% for name, url in job.urls.items %}
+                    <a href="{{ url }}">{{ name }}</a>
+                    {% endfor %}
+                </td>
+                <td>
+                    {{ job.created_at }}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </center>
+{% endif %}
 
 {% endblock %}

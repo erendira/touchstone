@@ -9,3 +9,7 @@ body {
 .navbar-brand {
     padding-left: 15px;
 }
+
+.table-nonfluid {
+    width: auto;
+}
