@@ -1,20 +1,12 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, render_to_response, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from encoder_proj import env_settings
-from hashlib import sha1
-from time import time
-from urlparse import urlparse
-import base64
-import hmac
 import MySQLdb
 import os
 import pyrax
-import pyrax.exceptions as exc
-import pyrax.utils as utils
-import sys
 import uuid
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
