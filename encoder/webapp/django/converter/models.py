@@ -2,7 +2,7 @@ from django.db import models
 from jsonfield import JSONField
 
 class EncodingJob(models.Model):
-    unique_id = models.CharField(max_length=100)
+    orig_uuid = models.CharField(max_length=100)
     filename = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
     urls = JSONField()

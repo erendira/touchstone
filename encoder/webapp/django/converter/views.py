@@ -23,29 +23,25 @@ region = "ORD"
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
+upload_cont_name = "upload"
+completed_cont_name = "completed"
 #-------------------------------------------------------------------------------
 def converter_index(request):
-    upload_container = cf.create_container("upload")
-    upload_container.make_public(ttl=1200)
-    completed_container = cf.create_container("completed")
-    completed_container.make_public(ttl=1200)
+    upload_cont = cf.create_container(upload_cont_name)
+    upload_cont.make_public(ttl=1200)
+    completed_cont = cf.create_container(completed_cont_name)
+    completed_cont.make_public(ttl=1200)
 
     origin = "https://" + request.META['SERVER_NAME']
-    upload_container.set_metadata({'Access-Control-Allow-Origin': origin})
+    upload_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
-    unique_id = str(uuid.uuid4())
-    expires = 60*60*3
+    orig_uuid = str(uuid.uuid4())
+    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3, 'PUT')
 
-    upload_url = cf.get_temp_url(\
-            upload_container, unique_id, expires, method='PUT')
-    download_url = cf.get_temp_url(\
-            upload_container, unique_id, expires, method='GET')
-
-    redirect_url = "/converter/uploaded/?unique_id=" + unique_id
+    redirect_url = "/converter/uploaded/?orig_uuid=" + orig_uuid
 
     data = {
             'upload_url': upload_url,
-            'b64_download_url': base64.b64encode(download_url),
             'redirect_url': redirect_url,
             }
     template = "converter/index.html"
@@ -58,14 +54,14 @@ def converter_index(request):
 #-------------------------------------------------------------------------------
 def uploaded(request):
     try:
-        unique_id = request.GET['unique_id']
+        orig_uuid = request.GET['orig_uuid']
         filename = request.GET['filename']
-        download_url = base64.b64decode(request.GET['b64_download_url']) +\
-                "&filename=" + filename
 
-        if unique_id and download_url:
-            messages.add_message(request, messages.SUCCESS, 'job_created_success')
-            return HttpResponseRedirect(reverse('status_index'))
+        download_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
+                'GET') + "&filename=" + filename
+
+        messages.add_message(request, messages.SUCCESS, 'job_created_success')
+        return HttpResponseRedirect(reverse('status_index'))
     except Exception,e:
         return HttpResponseRedirect('/')
 #-------------------------------------------------------------------------------
