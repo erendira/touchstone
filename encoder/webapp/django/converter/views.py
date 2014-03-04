@@ -1,8 +1,8 @@
-from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
-from django.template import RequestContext
+from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, render_to_response, redirect
+from django.template import RequestContext
 from encoder_proj import env_settings
 from hashlib import sha1
 from time import time
@@ -44,7 +44,7 @@ def converter_index(request):
     download_url = cf.get_temp_url(\
             upload_container, filename, expires, method='GET', key=key)
 
-    redirect_url = origin + "/status/uploaded/" + filename
+    redirect_url = "/converter/uploaded/" + filename
 
     data = {
             'upload_url': upload_url,
@@ -60,4 +60,11 @@ def converter_index(request):
         rendered_response = render_to_response(\
                 template, data, context_instance = context_instance)
         return rendered_response
+#-------------------------------------------------------------------------------
+def uploaded(request, filename):
+    if filename:
+        messages.add_message(request, messages.SUCCESS, 'job_created_success')
+        return HttpResponseRedirect(reverse('status_index'))
+    else:
+        return HttpResponseRedirect(reverse('converter_index'))
 #-------------------------------------------------------------------------------
