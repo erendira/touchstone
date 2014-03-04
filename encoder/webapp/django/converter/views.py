@@ -4,8 +4,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from encoder_proj import env_settings
+from converter.models import EncodingJob
 import MySQLdb
 import os
+import sys
 import pyrax
 import uuid
 #-------------------------------------------------------------------------------
@@ -47,12 +49,36 @@ def uploaded(request):
     try:
         orig_uuid = request.GET['orig_uuid']
         filename = request.GET['filename']
+    except Exception,e:
+        return HttpResponseRedirect('/')
 
+    try:
         download_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
                 'GET') + "&filename=" + filename
 
-        messages.add_message(request, messages.SUCCESS, 'job_created_success')
+        job_data = {
+                'orig_uuid': orig_uuid,
+                'filename': filename,
+                'status': "submitted",
+                'urls': {
+                    'orig': download_url,
+                    },
+                }
+        create_encoding_job(job_data)
+
+        messages.add_message(request, messages.SUCCESS, 'job_submit_success')
         return HttpResponseRedirect(reverse('status_index'))
     except Exception,e:
+        messages.add_message(request, messages.ERROR, 'job_submit_error')
         return HttpResponseRedirect('/')
+#-------------------------------------------------------------------------------
+def create_encoding_job(data):
+    j = EncodingJob(
+        orig_uuid = data['orig_uuid'],
+        filename = data['filename'],
+        status = data['status'],
+        urls = data['urls'],
+        )
+
+    j.save()
 #-------------------------------------------------------------------------------
