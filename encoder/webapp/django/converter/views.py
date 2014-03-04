@@ -23,9 +23,6 @@ region = "ORD"
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
-
-#meta = {"x-account-meta-temp-url-key": "rackspace_rocks"}
-#cf.set_account_metadata(meta)
 #-------------------------------------------------------------------------------
 def converter_index(request):
     upload_container = cf.create_container("upload")
@@ -34,7 +31,6 @@ def converter_index(request):
     completed_container.make_public(ttl=1200)
 
     origin = "https://" + request.META['SERVER_NAME']
-    #origin = "http://" + request.META['SERVER_NAME'] + ":" + request.META['SERVER_PORT']
     upload_container.set_metadata({'Access-Control-Allow-Origin': origin})
 
     unique_id = str(uuid.uuid4())
@@ -54,7 +50,6 @@ def converter_index(request):
             }
     template = "converter/index.html"
 
-
     if request.method == "GET":
         context_instance = RequestContext(request)
         rendered_response = render_to_response(\
@@ -62,16 +57,15 @@ def converter_index(request):
         return rendered_response
 #-------------------------------------------------------------------------------
 def uploaded(request):
-    unique_id = request.GET['unique_id']
-    filename = request.GET['filename']
-    download_url = base64.b64decode(request.GET['b64_download_url']) +\
-            "&filename=" + filename
+    try:
+        unique_id = request.GET['unique_id']
+        filename = request.GET['filename']
+        download_url = base64.b64decode(request.GET['b64_download_url']) +\
+                "&filename=" + filename
 
-    print >>sys.stderr, unique_id, download_url
-
-    if unique_id and download_url:
-        messages.add_message(request, messages.SUCCESS, 'job_created_success')
-        return HttpResponseRedirect(reverse('status_index'))
-    else:
-        return HttpResponseRedirect(reverse('converter_index'))
+        if unique_id and download_url:
+            messages.add_message(request, messages.SUCCESS, 'job_created_success')
+            return HttpResponseRedirect(reverse('status_index'))
+    except Exception,e:
+        return HttpResponseRedirect('/')
 #-------------------------------------------------------------------------------
