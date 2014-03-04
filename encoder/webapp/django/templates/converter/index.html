@@ -5,6 +5,20 @@
 {% endblock %}
 
 {% block body %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message|stringformat:"s" == "job_submit_error"  %}
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert"></a>
+                Error Submitting Encoding Job! Try again.
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<script type="text/javascript">
+$(".alert").delay(4500).fadeOut();
+</script>
+
 <div class="container">
 
     <p>
