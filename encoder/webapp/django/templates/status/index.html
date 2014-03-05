@@ -45,7 +45,9 @@ $(".alert").delay(4500).fadeOut();
                 </td>
                 <td style="text-transform: capitalize">
                     {% for name, url in job.urls.items %}
-                    <a href="{{ url }}">{{ name }}</a>
+                        {% if 'snet' not in name %}
+                            <a href="{{ url }}">{{ name }}</a>
+                        {% endif %}
                     {% endfor %}
                 </td>
                 <td>
