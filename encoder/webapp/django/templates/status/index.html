@@ -22,8 +22,8 @@ $(".alert").delay(4500).fadeOut();
 
 </br>
 
-{% if jobs %}
-    <center>
+<center>
+    {% if jobs %}
         <table class="table table-striped table-bordered table-nonfluid">
             <tr>
                 <th>UUID</th>
@@ -57,7 +57,13 @@ $(".alert").delay(4500).fadeOut();
             {% endfor %}
 
         </table>
-    </center>
-{% endif %}
+    {% else %}
+        No jobs have been submitted.
+        </br></br>
+        <form action="/">
+            <input class="btn btn-med" type="submit" value="Submit New Encoding Job">
+        </form>
+    {% endif %}
+</center>
 
 {% endblock %}
