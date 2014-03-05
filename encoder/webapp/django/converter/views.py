@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from encoder_proj import env_settings
 from converter.models import EncodingJob
+from utils import Utils, JSONGearmanClient
 import MySQLdb
 import os
 import sys
@@ -72,6 +73,22 @@ def uploaded(request):
         messages.add_message(request, messages.ERROR, 'job_submit_error')
         return HttpResponseRedirect('/')
 #-------------------------------------------------------------------------------
+def submit_job(task_name):
+    server = env_settings.GEARMAN_SERVER + ":4730"
+    GM_SERVERS = [server]
+    gm_client = JSONGearmanClient(GM_SERVERS)
+
+    data = {}
+    print >>sys.stderr, "Sending gearman job request: '%s'" % (task_name)
+
+    job_request = gm_client.submit_job(\
+            task_name,
+            data,
+            priority=None,
+            background=True,
+            wait_until_complete = False,
+            )
+#-------------------------------------------------------------------------------
 def create_encoding_job(data):
     j = EncodingJob(
         orig_uuid = data['orig_uuid'],
@@ -81,4 +98,6 @@ def create_encoding_job(data):
         )
 
     j.save()
+
+    submit_job("encode")
 #-------------------------------------------------------------------------------
