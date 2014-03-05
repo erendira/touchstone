@@ -53,7 +53,7 @@ $(document).ready(function() {
         fr.onload = function(e) {
             $.ajax({
                 xhr: xhr_with_progress,
-                url:"{{ upload_url }}",
+                url:"{{ upload_url|escape|safe }}",
                 type: 'PUT',
                 cache: false,
                 data: fr.result,
