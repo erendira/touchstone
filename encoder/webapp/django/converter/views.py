@@ -18,8 +18,8 @@ region = "ORD"
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
-upload_cont_name = "upload"
-completed_cont_name = "completed"
+upload_cont_name = "upload" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
+completed_cont_name = "completed" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
 #-------------------------------------------------------------------------------
 def converter_index(request):
     upload_cont = cf.create_container(upload_cont_name)
