@@ -95,7 +95,7 @@ class Utils:
         urls = json.loads(job['urls'])
         created_at = job['created_at']
 
-        urllib.urlretrieve(urls['original'], "/tmp/" + filename)
+        urllib.urlretrieve(urls['original_snet'], "/tmp/" + filename)
         
         return None
 #-------------------------------------------------------------------------------
