@@ -23,15 +23,13 @@ completed_cont_name = "completed"
 #-------------------------------------------------------------------------------
 def converter_index(request):
     upload_cont = cf.create_container(upload_cont_name)
-    upload_cont.make_public(ttl=1200)
     completed_cont = cf.create_container(completed_cont_name)
-    completed_cont.make_public(ttl=1200)
 
     origin = "https://" + request.META['SERVER_NAME']
     upload_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
     orig_uuid = str(uuid.uuid4())
-    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3, 'PUT')
+    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60, 'PUT')
 
     redirect_url = "/converter/uploaded/?orig_uuid=" + orig_uuid
 
@@ -56,7 +54,7 @@ def uploaded(request):
 
     try:
 
-        public_dl_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
+        public_dl_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60,
                 'GET') + "&filename=" + filename
 
         cf2 = pyrax.connect_to_cloudfiles(region, public=False)

@@ -60,7 +60,7 @@ $(document).ready(function() {
                 processData: false,
 
                 success: function (data) {
-                var success_url = "{{ redirect_url }}" + "&filename=" + filename
+                    var success_url = "{{ redirect_url }}" + "&filename=" + filename
                     window.location = success_url
                 },
 
