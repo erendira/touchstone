@@ -14,10 +14,13 @@ import uuid
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
 creds_file = os.path.expanduser("~/pyrax_rc")
-region = "ORD"
+region = env_settings.REGION.upper()
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
+meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
+cf.set_account_metadata(meta)
+
 upload_cont_name = "upload" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
 completed_cont_name = "completed" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
 #-------------------------------------------------------------------------------
@@ -28,8 +31,11 @@ def converter_index(request):
     origin = "https://" + request.META['SERVER_NAME']
     upload_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
+    key = cf.get_account_metadata()['x-account-meta-temp-url-key']
+
     orig_uuid = str(uuid.uuid4())
-    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60, 'PUT')
+    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60, 'PUT',
+            key=key)
 
     redirect_url = "/converter/uploaded/?orig_uuid=" + orig_uuid
 
@@ -54,12 +60,13 @@ def uploaded(request):
 
     try:
 
+        key = cf.get_account_metadata()['x-account-meta-temp-url-key']
         public_dl_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60,
-                'GET') + "&filename=" + filename
+                'GET', key=key) + "&filename=" + filename
 
         cf2 = pyrax.connect_to_cloudfiles(region, public=False)
         snet_dl_url = cf2.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
-                'GET') + "&filename=" + filename
+                'GET', key=key) + "&filename=" + filename
 
         job_data = {
                 'orig_uuid': orig_uuid,
