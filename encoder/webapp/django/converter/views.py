@@ -14,7 +14,8 @@ import uuid
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
 creds_file = os.path.expanduser("~/pyrax_rc")
-pyrax.set_credential_file(creds_file, "ORD")
+region = "ORD"
+pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
 upload_cont_name = "upload"
@@ -54,7 +55,12 @@ def uploaded(request):
         return HttpResponseRedirect('/')
 
     try:
-        download_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
+
+        public_dl_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
+                'GET') + "&filename=" + filename
+
+        cf2 = pyrax.connect_to_cloudfiles(region, public=False)
+        snet_dl_url = cf2.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
                 'GET') + "&filename=" + filename
 
         job_data = {
@@ -62,7 +68,8 @@ def uploaded(request):
                 'filename': filename,
                 'status': "submitted",
                 'urls': {
-                    'original': download_url,
+                    'original': public_dl_url,
+                    'original_snet': snet_dl_url,
                     },
                 }
         create_encoding_job(job_data)
