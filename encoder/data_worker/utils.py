@@ -95,7 +95,8 @@ class Utils:
         urls = json.loads(job['urls'])
         created_at = job['created_at']
 
-        urllib.urlretrieve(urls['original_snet'], "/tmp/" + filename)
+        output_path = '/tmp/' + orig_uuid
+        urllib.urlretrieve(urls['original_snet'], output_path)
         
         return None
 #-------------------------------------------------------------------------------
