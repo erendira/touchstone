@@ -80,11 +80,6 @@ class Utils:
 
         job_id = passed_data['job_id']
 
-        # update status
-        cmd = "UPDATE %s SET status='%s' WHERE id=%s;" % \
-                (table, "processing", job_id)
-        results = self.mysql_call(cmd)
-
         # pull job info
         cmd = "SELECT * FROM %s WHERE id=%s;" % (table, job_id)
         job = self.mysql_call(cmd)[0]
@@ -97,6 +92,11 @@ class Utils:
 
         output_path = '/tmp/' + orig_uuid
         urllib.urlretrieve(urls['original_snet'], output_path)
+
+        # update status
+        cmd = "UPDATE %s SET status='%s' WHERE id=%s;" % \
+                (table, "processing", job_id)
+        results = self.mysql_call(cmd)
         
         return None
 #-------------------------------------------------------------------------------
