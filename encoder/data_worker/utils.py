@@ -14,7 +14,18 @@ import traceback
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
 creds_file = os.path.expanduser("~/pyrax_rc")
-pyrax.set_credential_file(creds_file)
+region = env_settings.REGION.upper()
+pyrax.set_credential_file(creds_file, region)
+
+cf = pyrax.cloudfiles
+snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
+
+meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
+cf.set_account_metadata(meta)
+snet_cf.set_account_metadata(meta)
+
+uploaded_cont_name = "uploaded"
+completed_cont_name = "completed"
 
 c = Converter()
 table="converter_encodingjob"

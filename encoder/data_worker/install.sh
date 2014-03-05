@@ -43,8 +43,10 @@ api_key = $RAX_APIKEY
 EOF
 
 # setup environmental settings
+REGION=`xenstore-read vm-data/provider_data/region`
 rm env_settings.py
 sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
+    -e "s#{REGION}#$REGION#g" \
     -e "s#{MYSQL_HOST}#$DATA_MASTER_IP#g" \
     -e "s#{GEARMAN_SERVER}#$DATA_MASTER_IP#g" \
     env_settings_template.py | \
