@@ -18,29 +18,32 @@ region = env_settings.REGION.upper()
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
+snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
+
 meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
 cf.set_account_metadata(meta)
+snet_cf.set_account_metadata(meta)
 
-upload_cont_name = "upload" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
-completed_cont_name = "completed" + "_" + env_settings.DJANGO_SECRET_KEY[:5]
+uploaded_cont_name = "uploaded"
+completed_cont_name = "completed"
 #-------------------------------------------------------------------------------
 def converter_index(request):
-    upload_cont = cf.create_container(upload_cont_name)
+    uploaded_cont = cf.create_container(uploaded_cont_name)
     completed_cont = cf.create_container(completed_cont_name)
 
     origin = "https://" + request.META['SERVER_NAME']
-    upload_cont.set_metadata({'Access-Control-Allow-Origin': origin})
+    uploaded_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
     key = cf.get_account_metadata()['x-account-meta-temp-url-key']
 
     orig_uuid = str(uuid.uuid4())
-    upload_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60, 'PUT',
+    uploaded_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60, 'PUT',
             key=key)
 
     redirect_url = "/converter/uploaded/?orig_uuid=" + orig_uuid
 
     data = {
-            'upload_url': upload_url,
+            'uploaded_url': uploaded_url,
             'redirect_url': redirect_url,
             }
     template = "converter/index.html"
@@ -61,11 +64,10 @@ def uploaded(request):
     try:
 
         key = cf.get_account_metadata()['x-account-meta-temp-url-key']
-        public_dl_url = cf.get_temp_url(upload_cont_name, orig_uuid, 60*60,
+        public_dl_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60,
                 'GET', key=key) + "&filename=" + filename
 
-        cf2 = pyrax.connect_to_cloudfiles(region, public=False)
-        snet_dl_url = cf2.get_temp_url(upload_cont_name, orig_uuid, 60*60*3,
+        snet_dl_url = snet_cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60,
                 'GET', key=key) + "&filename=" + filename
 
         job_data = {
