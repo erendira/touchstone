@@ -73,21 +73,25 @@ def uploaded(request):
         messages.add_message(request, messages.ERROR, 'job_submit_error')
         return HttpResponseRedirect('/')
 #-------------------------------------------------------------------------------
-def submit_job(task_name):
+def submit_job(task_name, job_id):
     server = env_settings.GEARMAN_SERVER + ":4730"
     GM_SERVERS = [server]
     gm_client = JSONGearmanClient(GM_SERVERS)
 
-    data = {}
-    print >>sys.stderr, "Sending gearman job request: '%s'" % (task_name)
+    data = {
+            "job_id": job_id
+            }
 
-    job_request = gm_client.submit_job(\
-            task_name,
-            data,
-            priority=None,
-            background=True,
-            wait_until_complete = False,
-            )
+    try:
+        job_request = gm_client.submit_job(\
+                task_name,
+                data,
+                priority=None,
+                background=True,
+                wait_until_complete = False,
+                )
+    except Exception,e:
+        None
 #-------------------------------------------------------------------------------
 def create_encoding_job(data):
     j = EncodingJob(
@@ -99,5 +103,5 @@ def create_encoding_job(data):
 
     j.save()
 
-    submit_job("encode")
+    submit_job("encode", j.id)
 #-------------------------------------------------------------------------------
