@@ -43,10 +43,17 @@ $(".alert").delay(4500).fadeOut();
                 <td>
                     {{ job.status | capfirst}}
                 </td>
-                <td style="text-transform: capitalize">
+                <td>
                     {% for name, url in job.urls.items %}
                         {% if 'snet' not in name %}
-                            <a href="{{ url }}">{{ name }}</a>
+                            {% if 'original' in name %}
+                                <a href="{{ url }}">{{ name | capfirst }}</a>
+                            {% else %}
+                                <a href="{{ url }}">{{ name | upper}}</a>
+                            {% endif %}
+                            {% if not forloop.last %}
+                                |
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
