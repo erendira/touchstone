@@ -11,6 +11,7 @@ import pyrax.utils as utils
 import MySQLdb
 import urllib
 import traceback
+import uuid
 #-------------------------------------------------------------------------------
 pyrax.set_setting("identity_type", "rackspace")
 creds_file = os.path.expanduser("~/pyrax_rc")
@@ -86,6 +87,13 @@ class Utils:
 
         return results
 #-------------------------------------------------------------------------------
+    def update_job_status(self, status, job_id):
+        cmd = "UPDATE %s SET status='%s' WHERE id=%s;" % \
+                (table, status, job_id)
+        results = self.mysql_call(cmd)
+
+        return results
+#-------------------------------------------------------------------------------
     def encode_job(self, gearman_worker, gearman_job):
         passed_data = gearman_job.data
 
@@ -96,20 +104,81 @@ class Utils:
         job = self.mysql_call(cmd)[0]
 
         orig_uuid = job['orig_uuid']
-        filename = job['filename']
-        status = job['status']
         urls = json.loads(job['urls'])
-        created_at = job['created_at']
 
-        output_path = '/tmp/' + orig_uuid
-        urllib.urlretrieve(urls['original_snet'], output_path)
+        path = '/tmp/' + orig_uuid
+        urllib.urlretrieve(urls['original_snet'], path)
 
         # update status
-        cmd = "UPDATE %s SET status='%s' WHERE id=%s;" % \
-                (table, "processing", job_id)
-        results = self.mysql_call(cmd)
+        self.update_job_status("processing", job_id)
+
+        # start encoding job
+        self.encode(job_id, path)
         
         return None
+#-------------------------------------------------------------------------------
+    def encode(self, job_id, media):
+        cmd = "SELECT * FROM %s WHERE id=%s;" % (table, job_id)
+        job = self.mysql_call(cmd)[0]
+
+        orig_uuid = job['orig_uuid']
+
+        formats = { 
+                'mkv': ('aac', 'h264'),
+                'ogg': ('vorbis', 'theora'),
+                'avi': ('aac', 'mpeg2'),
+                'webm': ('vorbis', 'vp8')
+                }
+
+        for format,codecs in formats.items():
+            output_path = "/tmp/" + orig_uuid + "." + format
+            conv = c.convert(media, output_path,
+                    {
+                        'format': format,
+                        'audio': { 'codec': codecs[0] },
+                        'video': { 'codec': codecs[1] }
+                        })
+            for timecode in conv:
+                status = "Encoding %s @ %d%%" % (format, timecode)
+                self.update_job_status(status, job_id)
+
+        self.upload_encodings(job_id, formats)
+#-------------------------------------------------------------------------------
+    def upload_encodings(self, job_id, formats):
+        cmd = "SELECT * FROM %s WHERE id=%s;" % (table, job_id)
+        job = self.mysql_call(cmd)[0]
+
+        orig_uuid = job['orig_uuid']
+        filename = job['filename']
+        urls = json.loads(job['urls'])
+
+        self.update_job_status("uploading encodings", job_id)
+
+        for format in formats:
+            obj_name = str(uuid.uuid4())
+            filepath = "/tmp/" + orig_uuid + "." + format
+
+            snet_cf.upload_file(completed_cont_name, 
+                    file_or_path=filepath, obj_name=obj_name)
+
+            key = cf.get_account_metadata()['x-account-meta-temp-url-key']
+
+            root, ext = os.path.splitext(filename)
+            encoded_filename = root + "." + format
+            public_dl_url = cf.get_temp_url(completed_cont_name, obj_name, 
+                    60*60, 'GET', key=key) + "&filename=" + encoded_filename
+            snet_dl_url = snet_cf.get_temp_url(completed_cont_name, obj_name,
+                    60*60, 'GET', key=key) + "&filename=" + encoded_filename
+
+            urls[format] = public_dl_url
+            urls[format + "_snet"] = snet_dl_url
+            urls_str = json.dumps(urls)
+
+            cmd = "UPDATE %s SET urls='%s' WHERE id=%s;" % \
+                    (table, urls_str, job_id)
+            results = self.mysql_call(cmd)
+
+        self.update_job_status("complete", job_id)
 #-------------------------------------------------------------------------------
     def register_job(self, gm_servers, task_name, task_function):
         gm_worker = JSONGearmanWorker(gm_servers)
