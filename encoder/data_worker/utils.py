@@ -172,9 +172,9 @@ class Utils:
             root, ext = os.path.splitext(filename)
             encoded_filename = root + "." + format
             public_dl_url = cf.get_temp_url(completed_cont_name, obj_name, 
-                    60*60, 'GET', key=key) + "&filename=" + encoded_filename
+                    60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
             snet_dl_url = snet_cf.get_temp_url(completed_cont_name, obj_name,
-                    60*60, 'GET', key=key) + "&filename=" + encoded_filename
+                    60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
 
             urls[format] = public_dl_url
             urls[format + "_snet"] = snet_dl_url
