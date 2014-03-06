@@ -130,9 +130,9 @@ class Utils:
         orig_uuid = job['orig_uuid']
 
         formats = { 
+                'avi': ('aac', 'mpeg2'),
                 'mkv': ('aac', 'h264'),
                 'ogg': ('vorbis', 'theora'),
-                'avi': ('aac', 'mpeg2'),
                 'webm': ('vorbis', 'vp8')
                 }
 
