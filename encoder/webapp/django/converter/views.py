@@ -64,11 +64,11 @@ def uploaded(request):
     try:
 
         key = cf.get_account_metadata()['x-account-meta-temp-url-key']
-        public_dl_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60,
+        public_dl_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60*3,
                 'GET', key=key) + "&filename=" + filename
 
-        snet_dl_url = snet_cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60,
-                'GET', key=key) + "&filename=" + filename
+        snet_dl_url = snet_cf.get_temp_url(uploaded_cont_name, orig_uuid,
+                60*60*3, 'GET', key=key) + "&filename=" + filename
 
         job_data = {
                 'orig_uuid': orig_uuid,
