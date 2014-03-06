@@ -5,6 +5,7 @@ import json
 import env_settings
 import sys, os
 import os
+import glob
 import pyrax
 import pyrax.exceptions as exc
 import pyrax.utils as utils
@@ -94,6 +95,10 @@ class Utils:
 
         return results
 #-------------------------------------------------------------------------------
+    def cleanup(self, base_path):
+        for fl in glob.glob(base_path + "*"):
+            os.remove(fl)
+#-------------------------------------------------------------------------------
     def encode_job(self, gearman_worker, gearman_job):
         passed_data = gearman_job.data
 
@@ -156,7 +161,8 @@ class Utils:
 
         for format in formats:
             obj_name = str(uuid.uuid4())
-            filepath = "/tmp/" + orig_uuid + "." + format
+            base_path = "/tmp/" + orig_uuid
+            filepath = base_path + "." + format
 
             snet_cf.upload_file(completed_cont_name, 
                     file_or_path=filepath, obj_name=obj_name)
@@ -178,6 +184,7 @@ class Utils:
                     (table, urls_str, job_id)
             results = self.mysql_call(cmd)
 
+        self.cleanup(base_path)
         self.update_job_status("complete", job_id)
 #-------------------------------------------------------------------------------
     def register_job(self, gm_servers, task_name, task_function):
