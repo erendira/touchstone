@@ -95,8 +95,8 @@ class Utils:
 
         return results
 #-------------------------------------------------------------------------------
-    def cleanup(self, base_path):
-        for fl in glob.glob(base_path + "*"):
+    def cleanup(self, filepath):
+        for fl in glob.glob(filepath + "*"):
             os.remove(fl)
 #-------------------------------------------------------------------------------
     def encode_job(self, gearman_worker, gearman_job):
@@ -119,6 +119,7 @@ class Utils:
 
         # start encoding job
         self.encode(job_id, path)
+        self.update_job_status("complete", job_id)
         
         return None
 #-------------------------------------------------------------------------------
@@ -146,10 +147,14 @@ class Utils:
             for timecode in conv:
                 status = "Encoding %s @ %d%%" % (format, timecode)
                 self.update_job_status(status, job_id)
+            self.update_job_status("uploading %s" % format, job_id)
+            self.upload_encoding(job_id, format)
+            self.update_job_status("upload of %s done" % format, job_id)
 
-        self.upload_encodings(job_id, formats)
+        base_path = "/tmp/" + orig_uuid
+        self.cleanup(base_path)
 #-------------------------------------------------------------------------------
-    def upload_encodings(self, job_id, formats):
+    def upload_encoding(self, job_id, format):
         cmd = "SELECT * FROM %s WHERE id=%s;" % (table, job_id)
         job = self.mysql_call(cmd)[0]
 
@@ -157,35 +162,31 @@ class Utils:
         filename = job['filename']
         urls = json.loads(job['urls'])
 
-        self.update_job_status("uploading encodings", job_id)
+        obj_name = str(uuid.uuid4())
+        base_path = "/tmp/" + orig_uuid
+        filepath = base_path + "." + format
 
-        for format in formats:
-            obj_name = str(uuid.uuid4())
-            base_path = "/tmp/" + orig_uuid
-            filepath = base_path + "." + format
+        snet_cf.upload_file(completed_cont_name, 
+                file_or_path=filepath, obj_name=obj_name)
 
-            snet_cf.upload_file(completed_cont_name, 
-                    file_or_path=filepath, obj_name=obj_name)
+        key = cf.get_account_metadata()['x-account-meta-temp-url-key']
 
-            key = cf.get_account_metadata()['x-account-meta-temp-url-key']
+        root, ext = os.path.splitext(filename)
+        encoded_filename = root + "." + format
+        public_dl_url = cf.get_temp_url(completed_cont_name, obj_name, 
+                60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
+        snet_dl_url = snet_cf.get_temp_url(completed_cont_name, obj_name,
+                60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
 
-            root, ext = os.path.splitext(filename)
-            encoded_filename = root + "." + format
-            public_dl_url = cf.get_temp_url(completed_cont_name, obj_name, 
-                    60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
-            snet_dl_url = snet_cf.get_temp_url(completed_cont_name, obj_name,
-                    60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
+        urls[format] = public_dl_url
+        urls[format + "_snet"] = snet_dl_url
+        urls_str = json.dumps(urls)
 
-            urls[format] = public_dl_url
-            urls[format + "_snet"] = snet_dl_url
-            urls_str = json.dumps(urls)
+        cmd = "UPDATE %s SET urls='%s' WHERE id=%s;" % \
+                (table, urls_str, job_id)
+        results = self.mysql_call(cmd)
 
-            cmd = "UPDATE %s SET urls='%s' WHERE id=%s;" % \
-                    (table, urls_str, job_id)
-            results = self.mysql_call(cmd)
-
-        self.cleanup(base_path)
-        self.update_job_status("complete", job_id)
+        self.cleanup(filepath)
 #-------------------------------------------------------------------------------
     def register_job(self, gm_servers, task_name, task_function):
         gm_worker = JSONGearmanWorker(gm_servers)
