@@ -40,8 +40,8 @@ $(".alert").delay(4500).fadeOut();
                 <td>
                     {{ job.filename }}
                 </td>
-                <td style="text-transform: capitalize">
-                    {{ job.status }}
+                <td>
+                    {{ job.status | capfirst}}
                 </td>
                 <td style="text-transform: capitalize">
                     {% for name, url in job.urls.items %}
