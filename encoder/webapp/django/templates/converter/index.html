@@ -20,13 +20,13 @@ $(".alert").delay(4500).fadeOut();
 </script>
 
 <div class="container">
-    Pick a file to Upload & Encode
+    Encode a video to the formats: AVI, MKV, OGG & WEBM
     <span>
         <input type="file" 
         style="visibility:hidden; width: 1px;" 
         id='upfile' name='upfile'  
         onchange="$(this).parent().find('span').html($(this).val().replace('C:\\fakepath\\', ''))"  /> <!-- Chrome security returns 'C:\fakepath\'  -->
-        <input class="btn btn-primary" type="button" value="Choose File" onclick="$(this).parent().find('input[type=file]').click();"/> <!-- on button click fire the file click event -->
+        <input class="btn btn-primary" type="button" value="Choose Video to Encode" onclick="$(this).parent().find('input[type=file]').click();"/> <!-- on button click fire the file click event -->
         &nbsp;
         <span  class="badge badge-important" ></span>
     </span>
