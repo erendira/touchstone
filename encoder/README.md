@@ -1,6 +1,7 @@
 # Project Encoder
 
 Date: 03/6/2014
+
 ## Synopsis
 In this project, we will be setting up a webapp that encodes a provided video file into the following formats:
   * [AVI](http://en.wikipedia.org/wiki/Audio_Video_Interleave)
@@ -17,7 +18,13 @@ In this project, we will be setting up a webapp that encodes a provided video fi
   * The Gearman Job Worker then utilizes the [FFmpeg](http://www.ffmpeg.org/) encoding library to convert the user's video into the available formats
   * Once the video has been encoded into each format by the Gearman Job Worker, it will upload the encoding to Rackspace Cloud Files
   * All the while, the webapp will be providing a means to view the status of the encoding job as well as publicly accessible URL's of each encoding format as they become available for consumption
-  
+ 
+## Rackspace Cloud Services Used
+  * Cloud Servers
+  * Cloud Files
+  * Service Network
+  * Orchestration (OpenStack Heat)
+
 ## Architecture
   * Format: 3-Tier Web Architecture
     * **Front End**: Client HTTP Server (Nginx)
