@@ -1,6 +1,6 @@
 # Project Encoder
 
-Date: 03/6/2014
+Date: 03/07/2014
 
 ## Synopsis
 In this project, we will be setting up a webapp that encodes a provided video file into the following formats:
