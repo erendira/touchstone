@@ -10,6 +10,6 @@ Touchstone is a collection of projects with the intention of showcasing the foll
   * How to organzie & orchestrate the provisioning of cloud infrastructure and leveraging this capability to allow for the self-configuration of web services in the rest of the stack above
 
 ## Notes
-  * Each project contains an OpenStack Heat Template file (*.template) that self-provisions, installs and configures the project
+  * Each project contains an OpenStack Heat Template file (*.template) using the [HOT format](http://docs.openstack.org/developer/heat/template_guide/hot_guide.html) that self-provisions, installs and configures the project when provided into a Heat environment.
   * Currently, the Heat template file only functions on Rackspace's Public Cloud and is tailored to consume [Rackspace's Heat Resource Types](http://andersonvom.github.io/openstack_docs/template_guide/contrib.html)
   * Rackspace's Heat capabilities are currently limited to **internal usage only** as this service is currently not publicly accessible yet
