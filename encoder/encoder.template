@@ -14,33 +14,21 @@ parameters:
       - Ubuntu 13.10 (Saucy Salamander)
       description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 13.10 (Saucy Salamander)
 
-  flavor:
-    description: Rackspace Cloud Server flavor (Size)
+  keypair_name:
     type: string
-    default: 2 GB Performance
-    constraints:
-    - allowed_values:
-      - 1 GB Performance
-      - 2 GB Performance
-      - 4 GB Performance
-      - 8 GB Performance
-      description: Must be a valid Rackspace Cloud Server flavor. Default is 4GB.
 
   rax_username:
     type: string
-    required: true
     description: RAX Public Cloud Username
     hidden: true
 
   rax_apikey:
     type: string
-    required: true
     description: RAX Public Cloud API Key
     hidden: true
 
   mysql_pass:
     type: string
-    required: true
     default: password123
     hidden: true
     description: MYSQL Root & RAX user password
@@ -73,10 +61,12 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: frontend_server_name }
+      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
             #!/bin/bash
+            apt-get update && apt-get install curl -y
             curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip%
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, privateIPv4 ] }
@@ -87,10 +77,12 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: webapp_server_name }
+      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
             #!/bin/bash
+            apt-get update && apt-get install curl -y
             curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
           params:
             "%rax_username%": { get_param: rax_username }
@@ -104,10 +96,12 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: data_master_server_name }
+      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
             #!/bin/bash
+            apt-get update && apt-get install curl -y
             curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass%
           params:
             "%mysql_pass%": { get_param: mysql_pass }
@@ -118,10 +112,12 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: data_worker1_server_name }
+      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
             #!/bin/bash
+            apt-get update && apt-get install curl -y
             curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
           params:
             "%rax_username%": { get_param: rax_username }
