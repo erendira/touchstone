@@ -14,9 +14,6 @@ parameters:
       - Ubuntu 13.10 (Saucy Salamander)
       description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 13.10 (Saucy Salamander)
 
-  keypair_name:
-    type: string
-
   rax_username:
     type: string
     description: RAX Public Cloud Username
@@ -61,7 +58,6 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: frontend_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -77,7 +73,6 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: webapp_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -96,7 +91,6 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: data_master_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -112,7 +106,6 @@ resources:
       flavor: 2 GB Performance
       image: { get_param: image }
       name: { get_param: data_worker1_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
