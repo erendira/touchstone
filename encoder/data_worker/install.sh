@@ -19,6 +19,7 @@ sudo apt-get install mysql-client-core-5.5 -y
 sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo pip install gearman pyrax
+sudo pip install --upgrade pyrax
 
 # install ffmpeg & deps
 sudo apt-get install python-sphinx -y
