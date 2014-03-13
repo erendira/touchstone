@@ -2,6 +2,15 @@
 
 Date: 03/07/2014
 
+## Usage
+```
+heat stack-create \
+-P rax_username=$OS_USERNAME \
+-P rax_apikey=$OS_PASSWORD \
+--template-url=https://raw.github.com/metral/touchstone/master/encoder/encoder.template \
+encoder
+```
+
 ## Synopsis
 In this project, we will be setting up a webapp that encodes a provided video file into the following formats:
   * [AVI](http://en.wikipedia.org/wiki/Audio_Video_Interleave)
