@@ -1,6 +1,6 @@
 # Project Encoder
 
-Date: 03/07/2014
+Date: 03/13/2014
 
 ## Usage
 ```
