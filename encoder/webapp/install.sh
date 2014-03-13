@@ -22,6 +22,7 @@ sudo easy_install pip
 sudo apt-get install python-virtualenv -y
 
 sudo pip install django gunicorn pyrax jsonfield gearman
+sudo pip install --upgrade pyrax
 
 # setup virtualenv for webapp
 PWD=`pwd`
