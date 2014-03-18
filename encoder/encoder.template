@@ -32,12 +32,12 @@ parameters:
 
   use_snet:
     type: string
-    default: true
+    default: "true"
     description: Use the RAX Public Cloud Service Net
     constraints:
     - allowed_values:
-      - true
-      - false
+      - "true"
+      - "false"
       description: Must be relevant depending on your cloud environment
 
   branch:
