@@ -35,6 +35,26 @@ parameters:
     hidden: true
     description: MYSQL Root & RAX user password
 
+  use_snet:
+    type: string
+    default: "true"
+    description: Use the RAX Public Cloud Service Net
+    constraints:
+    - allowed_values:
+      - "true"
+      - "false"
+      description: Must be relevant depending on your cloud environment
+
+  branch:
+    type: string
+    default: master
+    description: Repo branch to use
+    constraints:
+    - allowed_values:
+      - master
+      - dev
+      description: Must be valid repo branch
+
   frontend_server_name:
     type: string
     default: frontend
@@ -69,9 +89,10 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip%
+            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip% %branch%
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, first_address ] }
+            "%branch%": { get_param: branch }
 
   webapp_server:
     type: "OS::Nova::Server"
@@ -85,12 +106,14 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
             "%data_master_ip%": { get_attr: [ data_master_server, first_address ] }
             "%mysql_pass%": { get_param: mysql_pass }
+            "%use_snet%": { get_param: use_snet }
+            "%branch%": { get_param: branch }
 
   data_master_server:
     type: "OS::Nova::Server"
@@ -104,9 +127,10 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass% %branch%
           params:
             "%mysql_pass%": { get_param: mysql_pass }
+            "%branch%": { get_param: branch }
 
   data_worker1_server:
     type: "OS::Nova::Server"
@@ -120,12 +144,14 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/master/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass%
+            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
             "%data_master_ip%": { get_attr: [ data_master_server, first_address ] }
             "%mysql_pass%": { get_param: mysql_pass }
+            "%use_snet%": { get_param: use_snet }
+            "%branch%": { get_param: branch }
 
 outputs:
 
