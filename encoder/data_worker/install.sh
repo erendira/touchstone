@@ -2,7 +2,7 @@
 
 EXPECTEDARGS=4
 if [ $# -lt $EXPECTEDARGS ]; then
-    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <DATA_MASTER_IP> <MYSQL_PASS>"
+    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <DATA_MASTER_IP> <MYSQL_PASS> <USE_SNET>"
     exit 0
 fi
 
@@ -10,6 +10,10 @@ RAX_USERNAME=$1
 RAX_APIKEY=$2
 DATA_MASTER_IP=$3
 MYSQL_PASS=$4
+USE_SNET=$5
+MYSQL_DB="encoder"
+MYSQL_USER="rax"
+MYSQL_PORT="3306"
 
 # setup & install mysql client
 sudo apt-get update
@@ -20,6 +24,7 @@ sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo pip install gearman pyrax
 sudo pip install --upgrade pyrax
+sudo pip install --upgrade six==1.5.2 requests==2.2.1
 
 # install ffmpeg & deps
 sudo apt-get install python-sphinx -y
@@ -44,17 +49,28 @@ api_key = $RAX_APIKEY
 EOF
 
 # setup environmental settings
-REGION=`xenstore-read vm-data/provider_data/region`
-rm env_settings.py
+if $USE_SNET ; then
+    REGION=`xenstore-read vm-data/provider_data/region`
+else
+    REGION="dfw"
+fi
+
+rm env_settings.py > /dev/null 2>&1
+
 sed -e "s#{MYSQL_PASSWORD}#$MYSQL_PASS#g" \
-    -e "s#{REGION}#$REGION#g" \
     -e "s#{MYSQL_HOST}#$DATA_MASTER_IP#g" \
     -e "s#{GEARMAN_SERVER}#$DATA_MASTER_IP#g" \
+    -e "s#{REGION}#$REGION#g" \
+    -e "s#{USE_SNET}#$USE_SNET#g" \
+    -e "s#{MYSQL_DB}#$MYSQL_DB#g" \
+    -e "s#{MYSQL_USER}#$MYSQL_USER#g" \
+    -e "s#{MYSQL_PORT}#$MYSQL_PORT#g" \
     env_settings_template.py | \
     tee env_settings.py > /dev/null
 
+
 # install supervisord
-sudo rm /etc/supervisord.conf
+sudo rm /etc/supervisord.conf > /dev/null 2>&1
 PWD=`pwd`
 sed "s#{ENCODER_PATH}#$PWD#g" supervisord_template.conf | \
         sudo tee /etc/supervisord.conf > /dev/null

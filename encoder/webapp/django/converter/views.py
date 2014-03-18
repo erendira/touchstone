@@ -18,11 +18,16 @@ region = env_settings.REGION.upper()
 pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
-snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
 
 meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
 cf.set_account_metadata(meta)
-snet_cf.set_account_metadata(meta)
+
+# Only use service net for cloudfiles if on public cloud, not private
+if env_settings.USE_SNET == "true":
+    snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
+    snet_cf.set_account_metadata(meta)
+else:
+    snet_cf = cf
 
 uploaded_cont_name = "uploaded"
 completed_cont_name = "completed"
