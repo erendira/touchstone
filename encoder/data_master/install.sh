@@ -44,5 +44,4 @@ echo "#################################################"
 
 
 # install gearman
-sudo apt-get update
 sudo apt-get install gearman-job-server -y
