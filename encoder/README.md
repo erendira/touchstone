@@ -4,11 +4,9 @@ Date: 03/13/2014
 
 ## Usage
 ```
-heat stack-create \
--P rax_username=$OS_USERNAME \
--P rax_apikey=$OS_PASSWORD \
---template-url=https://raw.github.com/metral/touchstone/master/encoder/encoder.template \
-encoder
+heat stack-create encoder \
+--parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD" \
+-u "https://raw.github.com/metral/touchstone/master/encoder/encoder.template"
 ```
 
 ## Synopsis
