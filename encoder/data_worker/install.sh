@@ -32,6 +32,7 @@ sudo apt-get install python-sphinx -y
 MACHINE_TYPE=`uname -m`
 if [ ${MACHINE_TYPE} == 'x86_64' ]; then
     wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
+    tar xvf ffmpeg*
     mv ffmpeg*/ff* /usr/local/bin/
     mv ffmpeg*/qt* /usr/local/bin/
 else
