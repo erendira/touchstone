@@ -1,5 +1,5 @@
 ## Touchstone
-Date: 03/13/2014
+Date: 03/18/2014
 
 ## Introduction
 Touchstone is a collection of projects with the intention of showcasing the following lessons & Rackspace Cloud capabilties:
@@ -11,8 +11,11 @@ Touchstone is a collection of projects with the intention of showcasing the foll
 
 ## Notes
   * Each project contains an OpenStack Heat Template file (*.template) using the [HOT format](http://docs.openstack.org/developer/heat/template_guide/hot_guide.html) that self-provisions, installs and configures the project when provided into a Heat environment.
-  * Currently, the Heat template file only functions on Rackspace's Public Cloud and is tailored to consume [Rackspace's Heat Resource Types](http://andersonvom.github.io/openstack_docs/template_guide/contrib.html)
-  * Rackspace's Heat capabilities are currently available via API
+  * There are templates that function for both Rackspace's Public Cloud & Rackspace's Private Cloud
+    * On public cloud, it is tailored to consume [Rackspace's Heat Resource Types](http://andersonvom.github.io/openstack_docs/template_guide/contrib.html)
+    * On private cloud, it consumes the standard [Heat Resource Types](http://docs.openstack.org/developer/heat/template_guide/openstack.html)
+  * Rackspace's Public Cloud Orchestration (aka "Heat") capabilities are currently available via API only
     * [Announcement Blog Post](http://www.rackspace.com/blog/cloud-orchestration-automating-deployments-of-full-stack-configurations/)
     * [Getting Started Guide](http://docs.rackspace.com/orchestration/api/v1/orchestration-getting-started/content/DB_Overview.html)
     * [API](http://docs.rackspace.com/orchestration/api/v1/orchestration-devguide/content/overview.html)
+  * Rackspace's Private Cloud Orchestatration (aka "Heat") capabilties are currenlty available by modifying the Opscode Chef run list to include 'role[heat-all]'
