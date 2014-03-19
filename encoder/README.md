@@ -6,7 +6,7 @@ Date: 03/13/2014
 ```
 heat stack-create encoder \
 --parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;branch=master;use_snet=true" \
--u "https://raw.github.com/metral/touchstone/master/encoder/encoder.template"
+-u "https://raw.github.com/metral/touchstone/master/encoder/public_cloud_encoder.template"
 ```
 
 ## Synopsis
