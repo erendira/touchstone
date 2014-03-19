@@ -18,4 +18,4 @@ Touchstone is a collection of projects with the intention of showcasing the foll
     * [Announcement Blog Post](http://www.rackspace.com/blog/cloud-orchestration-automating-deployments-of-full-stack-configurations/)
     * [Getting Started Guide](http://docs.rackspace.com/orchestration/api/v1/orchestration-getting-started/content/DB_Overview.html)
     * [API](http://docs.rackspace.com/orchestration/api/v1/orchestration-devguide/content/overview.html)
-  * Rackspace's Private Cloud Orchestatration (aka "Heat") capabilties are currenlty available by modifying the Opscode Chef run list to include 'role[heat-all]'
+  * Rackspace's Private Cloud Orchestatration (aka "Heat") capabilties are currenlty available via API and Dashboard after modifying the Opscode Chef run list to include 'role[heat-all]'
