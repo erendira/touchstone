@@ -29,10 +29,16 @@ sudo pip install --upgrade six==1.5.2 requests==2.2.1
 # install ffmpeg & deps
 sudo apt-get install python-sphinx -y
 
-wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
-tar xvf ffmpeg*
-mv ffmpeg*/ff* /usr/local/bin/
-mv ffmpeg*/qt* /usr/local/bin/
+MACHINE_TYPE=`uname -m`
+if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
+    mv ffmpeg*/ff* /usr/local/bin/
+    mv ffmpeg*/qt* /usr/local/bin/
+else
+    wget http://ffmpeg.gusari.org/static/32bit/ffmpeg.static.32bit.2014-03-01.tar.gz
+    tar xvf ffmpeg*
+    mv ff* /usr/local/bin/
+fi
 rm -rf ffmpeg*
 
 git clone https://github.com/senko/python-video-converter.git
