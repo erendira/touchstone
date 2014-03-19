@@ -8,10 +8,11 @@ from status import views as status_views
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', include('converter.urls')),
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': STATIC_ROOT}),
+    url(r'', include('converter.urls')),
     url(r'^converter/', include('converter.urls')),
     url(r'^status/', include('status.urls')),
+
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': STATIC_ROOT}),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

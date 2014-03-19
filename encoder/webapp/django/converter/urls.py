@@ -3,5 +3,5 @@ from converter import views
 
 urlpatterns = patterns('',
     url(r'^$', views.converter_index, name='converter_index'),
-    url(r'^uploaded', views.uploaded, name='uploaded'),
+    url(r'^uploaded/$', views.uploaded, name='uploaded'),
 )
