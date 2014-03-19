@@ -1,13 +1,26 @@
 # Project Encoder
 
-Date: 03/13/2014
+Date: 03/18/2014
 
 ## Usage
+
+**Rackspace Public Cloud**
+
 ```
 heat stack-create encoder \
 --parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;branch=master;use_snet=true" \
 -u "https://raw.github.com/metral/touchstone/master/encoder/public_cloud_encoder.template"
 ```
+
+**Rackspace Private Cloud**
+
+```
+heat stack-create encoder \
+--parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;branch=master;use_snet=false" \
+-u "https://raw.github.com/metral/touchstone/master/encoder/private_cloud_encoder.template"
+```
+
+***Note:*** Parameters "rax\_username" & "rax\_apikey" refer to the Rackspace Public Cloud Username & API Key as all media files are stored on Rackspace Cloud Files in the Public Cloud
 
 ## Synopsis
 In this project, we will be setting up a webapp that encodes a provided video file into the following formats:
