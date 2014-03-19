@@ -14,11 +14,6 @@ parameters:
       - saucy-heat-image
       description: Must be a valid Rackspace Cloud Server Image, default is saucy-heat-image
 
-  keypair_name:
-    type: string
-    default: admin_key
-    description: Nova keypair
-
   rax_username:
     type: string
     description: RAX Public Cloud Username
@@ -83,7 +78,6 @@ resources:
       flavor: 4096MB Standard Instance
       image: { get_param: image }
       name: { get_param: frontend_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -100,7 +94,6 @@ resources:
       flavor: 4096MB Standard Instance
       image: { get_param: image }
       name: { get_param: webapp_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -121,7 +114,6 @@ resources:
       flavor: 4096MB Standard Instance
       image: { get_param: image }
       name: { get_param: data_master_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
@@ -138,7 +130,6 @@ resources:
       flavor: 4096MB Standard Instance
       image: { get_param: image }
       name: { get_param: data_worker1_server_name }
-      key_name: { get_param: keypair_name }
       user_data:
         str_replace:
           template: |
