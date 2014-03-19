@@ -89,7 +89,7 @@ def uploaded(request):
         create_encoding_job(job_data)
 
         messages.add_message(request, messages.SUCCESS, 'job_submit_success')
-        status_path = request.META['HTTP_REFERER'] + "status"
+        status_path = request.META['HTTP_REFERER'] + "status/"
         return HttpResponseRedirect(status_path)
     except Exception,e:
         messages.add_message(request, messages.ERROR, 'job_submit_error')
