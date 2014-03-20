@@ -8,11 +8,11 @@ parameters:
   image:
     description: Open Stack Cloud Server Image (Distribution)
     type: string
-    default: saucy-heat-image
+    default: saucy-image-heat
     constraints:
     - allowed_values:
-      - saucy-heat-image
-      description: Must be a valid Rackspace Cloud Server Image, default is saucy-heat-image
+      - saucy-image-heat
+      description: Must be a valid Rackspace Cloud Server Image, default is saucy-image-heat
 
   rax_username:
     type: string
