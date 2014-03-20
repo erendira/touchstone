@@ -75,7 +75,7 @@ resources:
   frontend_server:
     type: "OS::Nova::Server"
     properties:
-      flavor: 4096MB Standard Instance
+      flavor: m1.medium
       image: { get_param: image }
       name: { get_param: frontend_server_name }
       user_data:
@@ -91,7 +91,7 @@ resources:
   webapp_server:
     type: "OS::Nova::Server"
     properties:
-      flavor: 4096MB Standard Instance
+      flavor: m1.medium
       image: { get_param: image }
       name: { get_param: webapp_server_name }
       user_data:
@@ -111,7 +111,7 @@ resources:
   data_master_server:
     type: "OS::Nova::Server"
     properties:
-      flavor: 4096MB Standard Instance
+      flavor: m1.medium
       image: { get_param: image }
       name: { get_param: data_master_server_name }
       user_data:
@@ -127,7 +127,7 @@ resources:
   data_worker1_server:
     type: "OS::Nova::Server"
     properties:
-      flavor: 4096MB Standard Instance
+      flavor: m1.medium
       image: { get_param: image }
       name: { get_param: data_worker1_server_name }
       user_data:
