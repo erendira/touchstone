@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Create Hadoop cluster
+source ~/openrc
 TOKEN=`keystone token-get | grep id | grep -v user_id | awk '{print $4}'`
 export AUTH_TOKEN=`echo $TOKEN | cut -d ' ' -f1`
 export TENANT_ID=`echo $TOKEN | cut -d ' ' -f2`
-export SAVANNA_URL="http://10.127.26.132:8386/v1.0/$TENANT_ID"
+export OS_AUTH_URL_HOST=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f1`
+export SAVANNA_URL="http://$OS_AUTH_URL_HOST:8386/v1.0/$TENANT_ID"
 export IMAGE_ID=`glance image-list | grep sahara | awk '{print $2}'`
 export IMAGE_USER="ubuntu"
 
