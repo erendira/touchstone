@@ -28,15 +28,14 @@ TOKEN=`keystone token-get | grep id | grep -v user_id | awk '{print $4}'`
 export AUTH_TOKEN=`echo $TOKEN | cut -d ' ' -f1`
 export TENANT_ID=`echo $TOKEN | cut -d ' ' -f2`
 
-# TODO: put sahara file on cloud files to be faster d/l than from mirantis
-#wget http://sahara-files.mirantis.com/sahara-icehouse-vanilla-1.2.1-ubuntu-13.10.qcow2
+wget http://abed605ffd85ad8177a1-c04b8ff82efc0caa202f092894159bbe.r10.cf1.rackcdn.com/sahara-icehouse-vanilla-1.2.1-ubuntu-13.10.qcow2
 glance image-create --name=sahara-0.3-icehouse-vanilla-hadoop-1.2.1-ubuntu-13.10 --disk-format=qcow2 --container-format=bare < ./sahara-icehouse-vanilla-1.2.1-ubuntu-13.10.qcow2
 export IMAGE_ID=`glance image-list | grep sahara | awk '{print $2}'`
 export IMAGE_USER="ubuntu"
 
 # Register Glance image with Savanna
-# TODO: get IP addr of br-eth2
-export SAVANNA_URL="http://10.127.26.132:8386/v1.0/$TENANT_ID"
+export OS_AUTH_URL_HOST=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f1`
+export SAVANNA_URL="http://$OS_AUTH_URL_HOST:8386/v1.0/$TENANT_ID"
 http POST $SAVANNA_URL/images/$IMAGE_ID X-Auth-Token:$AUTH_TOKEN username=ubuntu
 http $SAVANNA_URL/images/$IMAGE_ID/tag X-Auth-Token:$AUTH_TOKEN tags:='["vanilla", "1.2.1", "ubuntu"]'
 
@@ -97,36 +96,4 @@ echo $WORKER_TEMPLATE_ID
 }
 EOF
 
-OUTPUT=`http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json`
-CLUSTER="$OUTPUT"
-echo $CLUSTER
-CLUSTER_TEMPLATE_ID=`echo $CLUSTER | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["cluster_template"]["id"]'`
-echo $CLUSTER_TEMPLATE_ID
-
-# Create Hadoop cluster
-(cat | tee cluster_create.json) << EOF
-{
-    "name": "cluster-1",
-    "plugin_name": "vanilla",
-    "hadoop_version": "1.2.1",
-    "cluster_template_id" : "$CLUSTER_TEMPLATE_ID",
-    "user_keypair_id": "adminKey",
-    "default_image_id": "$IMAGE_ID"
-}
-EOF
-
-http $SAVANNA_URL/clusters X-Auth-Token:$AUTH_TOKEN < cluster_create.json
-
-sleep 30
-
-MASTER_IP=`nova show cluster-1-master-001 | grep "public\ network" | awk '{print $5}'`
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$MASTER_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh"
-
-# Usage example
-echo ""
-echo "Usage - Create a Hadoop job on the master node"
-echo "----------------------------------------------"
-echo "$ ssh ubuntu@172.16.0.2"
-echo "$ sudo su hadoop"
-echo "$ cd /usr/share/hadoop"
-echo "$ hadoop jar hadoop-examples-1.2.1.jar pi 10 100"
+http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json
