@@ -2,7 +2,7 @@
 
 # Create Hadoop cluster
 source ~/openrc
-pushd ~/
+pushd ~/ > /dev/null 2>&1
 
 # Add keypair
 if [ ! -f ~/.ssh/id_rsa ];then
