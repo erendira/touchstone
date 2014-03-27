@@ -23,7 +23,7 @@ cp savanna-venv/share/savanna/savanna.conf.sample savanna-venv/etc/savanna.conf
 sed -i "2i\os_auth_host=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f1`\nos_auth_port=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f2`\nos_admin_username=$OS_USERNAME\nos_admin_password=$OS_PASSWORD\nos_admin_tenant_name=$OS_TENANT_NAME\ndebug=true\nuse_floating_ips=false" savanna-venv/etc/savanna.conf
 
 # To send REST requests to Savanna API, use httpie (optional)
-sudo pip install httpie
+savanna-venv/bin/pip install httpie
 
 # Start Savanna API Server
 savanna-venv/bin/python savanna-venv/bin/savanna-api --config-file savanna-venv/etc/savanna.conf > ~/savanna_api_server.log 2>&1 &
@@ -42,8 +42,8 @@ export IMAGE_USER="ubuntu"
 # Register Glance image with Savanna
 export OS_AUTH_URL_HOST=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f1`
 export SAVANNA_URL="http://$OS_AUTH_URL_HOST:8386/v1.0/$TENANT_ID"
-http POST $SAVANNA_URL/images/$IMAGE_ID X-Auth-Token:$AUTH_TOKEN username=$IMAGE_USER
-http $SAVANNA_URL/images/$IMAGE_ID/tag X-Auth-Token:$AUTH_TOKEN tags:='["vanilla", "1.2.1", "ubuntu"]'
+savanna-venv/bin/http POST $SAVANNA_URL/images/$IMAGE_ID X-Auth-Token:$AUTH_TOKEN username=$IMAGE_USER
+savanna-venv/bin/http $SAVANNA_URL/images/$IMAGE_ID/tag X-Auth-Token:$AUTH_TOKEN tags:='["vanilla", "1.2.1", "ubuntu"]'
 
 # Create Hadoop nodegroup templates & send to Savanna
 mkdir ~/nodegroup_templates
@@ -69,13 +69,13 @@ EOF
 }
 EOF
 
-OUTPUT=`http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_master_template_create.json`
+OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_master_template_create.json`
 MASTER="$OUTPUT"
 echo $MASTER
 MASTER_TEMPLATE_ID=`echo $MASTER | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["node_group_template"]["id"]'`
 echo $MASTER_TEMPLATE_ID
 
-OUTPUT=`http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_worker_template_create.json`
+OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_worker_template_create.json`
 WORKER="$OUTPUT"
 echo $WORKER
 WORKER_TEMPLATE_ID=`echo $WORKER | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["node_group_template"]["id"]'`
@@ -102,7 +102,7 @@ echo $WORKER_TEMPLATE_ID
 }
 EOF
 
-http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json
+savanna-venv/bin/http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json
 
 # Setup security groups
 
