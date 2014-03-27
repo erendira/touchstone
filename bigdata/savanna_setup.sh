@@ -103,3 +103,9 @@ echo $WORKER_TEMPLATE_ID
 EOF
 
 http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json
+
+# Setup security groups
+
+nova secgroup-add-rule default tcp 50030 50030 0.0.0.0/0
+nova secgroup-add-rule default tcp 50060 50060 0.0.0.0/0
+nova secgroup-add-rule default tcp 50070 50070 0.0.0.0/0
