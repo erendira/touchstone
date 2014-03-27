@@ -42,7 +42,7 @@ export IMAGE_USER="ubuntu"
 # Register Glance image with Savanna
 export OS_AUTH_URL_HOST=`echo $OS_AUTH_URL | cut -d "/" -f3 | cut -d ":" -f1`
 export SAVANNA_URL="http://$OS_AUTH_URL_HOST:8386/v1.0/$TENANT_ID"
-http POST $SAVANNA_URL/images/$IMAGE_ID X-Auth-Token:$AUTH_TOKEN username=ubuntu
+http POST $SAVANNA_URL/images/$IMAGE_ID X-Auth-Token:$AUTH_TOKEN username=$IMAGE_USER
 http $SAVANNA_URL/images/$IMAGE_ID/tag X-Auth-Token:$AUTH_TOKEN tags:='["vanilla", "1.2.1", "ubuntu"]'
 
 # Create Hadoop nodegroup templates & send to Savanna
