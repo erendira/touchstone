@@ -2,6 +2,13 @@
 
 # Create Hadoop cluster
 source ~/openrc
+
+# Add keypair
+if [ ! -f ~/.ssh/id_rsa ];then
+    ssh-keygen -t rsa -f ~/.ssh/id_rsa -N ''
+fi
+nova keypair-add adminKey --pub-key ~/.ssh/id_rsa.pub > /dev/null 2>&1
+
 TOKEN=`keystone token-get | grep id | grep -v user_id | awk '{print $4}'`
 export AUTH_TOKEN=`echo $TOKEN | cut -d ' ' -f1`
 export TENANT_ID=`echo $TOKEN | cut -d ' ' -f2`
