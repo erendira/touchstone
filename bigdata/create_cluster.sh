@@ -57,12 +57,12 @@ echo "Cluster 'cluster-$NEW_UUID' is now '$CLUSTER_STATUS'"
 MASTER_IP=`nova show cluster-$NEW_UUID-master-001 | grep "public\ network" | awk '{print $5}'`
 WORKER1_IP=`nova show cluster-$NEW_UUID-workers-001 | grep "public\ network" | awk '{print $5}'`
 WORKER2_IP=`nova show cluster-$NEW_UUID-workers-002 | grep "public\ network" | awk '{print $5}'`
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$MASTER_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'stop-all.sh ; start-all.sh'" > /dev/null 2>&1
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$WORKER1_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'hadoop-daemon.sh stop datanode ; hadoop-daemon.sh start datanode ; hadoop-daemon.sh stop jobtracker ; hadoop-daemon.sh start jobtracker ;'" > /dev/null 2>&1
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$WORKER2_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'hadoop-daemon.sh stop datanode ; hadoop-daemon.sh start datanode ; hadoop-daemon.sh stop jobtracker ; hadoop-daemon.sh start jobtracker ;'" > /dev/null 2>&1
+ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$MASTER_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'stop-all.sh ; start-all.sh'" > /dev/null 2>&1
+ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$WORKER1_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'hadoop-daemon.sh stop datanode ; hadoop-daemon.sh start datanode ; hadoop-daemon.sh stop jobtracker ; hadoop-daemon.sh start jobtracker ;'" > /dev/null 2>&1
+ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$WORKER2_IP "sudo chmod 777 /usr/share/hadoop ; sudo sed -i 's/128m/2048m/g' /etc/hadoop/hadoop-env.sh ; sudo su hadoop -c 'hadoop-daemon.sh stop datanode ; hadoop-daemon.sh start datanode ; hadoop-daemon.sh stop jobtracker ; hadoop-daemon.sh start jobtracker ;'" > /dev/null 2>&1
 
 function get_hadoop_avail_nodes(){
-    STATE=`ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$MASTER_IP "sudo su hadoop -c 'hadoop dfsadmin -report | grep Datanodes | cut -d \" \" -f3'"`
+    STATE=`ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=quiet $IMAGE_USER@$MASTER_IP "sudo su hadoop -c 'hadoop dfsadmin -report | grep Datanodes | cut -d \" \" -f3'"`
     echo "$STATE"
 }
 
