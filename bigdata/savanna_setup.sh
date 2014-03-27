@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Install & upgrade deps
+apt-get update
+apt-get install python-setuptools -y
+easy_install pip ; easy_install --upgrade pip
+pip install --upgrade virtualenv
+
 # Source creds
 source ~/openrc
 export DEFAULT_MASTER_FLAVOR=`nova flavor-show m1.medium | grep id | awk '{print $4}'`
