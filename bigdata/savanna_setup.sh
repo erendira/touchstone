@@ -12,9 +12,9 @@ export DEFAULT_MASTER_FLAVOR=`nova flavor-show m1.medium | grep id | awk '{print
 export DEFAULT_WORKER_FLAVOR=`nova flavor-show m1.medium | grep id | awk '{print $4}'`
 
 # Install & configure Savanna
-cd ~/
 sudo apt-get install python-setuptools python-virtualenv python-dev -y
 
+pushd ~/
 virtualenv savanna-venv
 savanna-venv/bin/pip install savanna
 mkdir savanna-venv/etc
@@ -47,7 +47,7 @@ savanna-venv/bin/http $SAVANNA_URL/images/$IMAGE_ID/tag X-Auth-Token:$AUTH_TOKEN
 
 # Create Hadoop nodegroup templates & send to Savanna
 mkdir ~/nodegroup_templates
-cd ~/nodegroup_templates
+pushd ~/nodegroup_templates
 
 (cat | tee ng_master_template_create.json) << EOF
 {
@@ -68,6 +68,7 @@ EOF
     "node_processes": ["tasktracker", "datanode"]
 }
 EOF
+popd
 
 OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_master_template_create.json`
 MASTER="$OUTPUT"
