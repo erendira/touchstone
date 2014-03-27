@@ -83,6 +83,7 @@ WORKER_TEMPLATE_ID=`echo $WORKER | python -c 'import json,sys;obj=json.load(sys.
 echo $WORKER_TEMPLATE_ID
 
 # Create Hadoop cluster template & send to Savanna
+pushd ~/nodegroup_templates
 (cat | tee cluster_template_create.json) << EOF
 {
     "name": "demo-cluster-template",
@@ -102,11 +103,11 @@ echo $WORKER_TEMPLATE_ID
     ]
 }
 EOF
+popd
 
-savanna-venv/bin/http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < cluster_template_create.json
+savanna-venv/bin/http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN < ~/nodegroup_templates/cluster_template_create.json
 
 # Setup security groups
-
 nova secgroup-add-rule default tcp 50010 50010 0.0.0.0/0
 nova secgroup-add-rule default tcp 50030 50030 0.0.0.0/0
 nova secgroup-add-rule default tcp 50060 50060 0.0.0.0/0
