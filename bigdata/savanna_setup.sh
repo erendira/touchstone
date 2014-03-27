@@ -70,13 +70,13 @@ EOF
 EOF
 popd
 
-OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_master_template_create.json`
+OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ~/nodegroup_templates/ng_master_template_create.json`
 MASTER="$OUTPUT"
 echo $MASTER
 MASTER_TEMPLATE_ID=`echo $MASTER | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["node_group_template"]["id"]'`
 echo $MASTER_TEMPLATE_ID
 
-OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ng_worker_template_create.json`
+OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/node-group-templates X-Auth-Token:$AUTH_TOKEN < ~/nodegroup_templates/ng_worker_template_create.json`
 WORKER="$OUTPUT"
 echo $WORKER
 WORKER_TEMPLATE_ID=`echo $WORKER | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["node_group_template"]["id"]'`

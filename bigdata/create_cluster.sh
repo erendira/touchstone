@@ -2,6 +2,7 @@
 
 # Create Hadoop cluster
 source ~/openrc
+pushd ~/
 
 # Add keypair
 if [ ! -f ~/.ssh/id_rsa ];then
@@ -17,7 +18,7 @@ export SAVANNA_URL="http://$OS_AUTH_URL_HOST:8386/v1.0/$TENANT_ID"
 export IMAGE_ID=`glance image-list | grep sahara | awk '{print $2}'`
 export IMAGE_USER="ubuntu"
 
-CLUSTER_TEMPLATES=`http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN`
+CLUSTER_TEMPLATES=`savanna-venv/bin/http $SAVANNA_URL/cluster-templates X-Auth-Token:$AUTH_TOKEN`
 CLUSTER_TEMPLATE_ID=`echo $CLUSTER_TEMPLATES | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["cluster_templates"][0]["id"]'`
 
 # Create Hadoop cluster
@@ -34,11 +35,11 @@ CLUSTER_FILE="/tmp/cluster_create_$NEW_UUID.json"
 }
 EOF
 
-CREATE_CLUSTER_OUTPUT=`http $SAVANNA_URL/clusters X-Auth-Token:$AUTH_TOKEN < $CLUSTER_FILE`
+CREATE_CLUSTER_OUTPUT=`savanna-venv/bin/http $SAVANNA_URL/clusters X-Auth-Token:$AUTH_TOKEN < $CLUSTER_FILE`
 CLUSTER_ID=`echo $CREATE_CLUSTER_OUTPUT | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["cluster"]["id"]'`
 
 function get_cluster_status(){
-    CLUSTER_DATA=`http $SAVANNA_URL/clusters/$CLUSTER_ID X-Auth-Token:$AUTH_TOKEN`
+    CLUSTER_DATA=`savanna-venv/bin/http $SAVANNA_URL/clusters/$CLUSTER_ID X-Auth-Token:$AUTH_TOKEN`
     STATUS=`echo $CLUSTER_DATA | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["cluster"]["status"]'`
     echo "$STATUS"
 }
