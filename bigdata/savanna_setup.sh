@@ -36,7 +36,7 @@ export TENANT_ID=`echo $TOKEN | cut -d ' ' -f2`
 
 wget http://abed605ffd85ad8177a1-c04b8ff82efc0caa202f092894159bbe.r10.cf1.rackcdn.com/savanna-0.3-vanilla-1.2.1-ubuntu-13.04.qcow2
 glance image-create --name=savanna-0.3-vanilla-1.2.1-ubuntu-13.04 --disk-format=qcow2 --container-format=bare < ./savanna-0.3-vanilla-1.2.1-ubuntu-13.04.qcow2
-export IMAGE_ID=`glance image-list | grep sahara | awk '{print $2}'`
+export IMAGE_ID=`glance image-list | grep savanna | awk '{print $2}'`
 export IMAGE_USER="ubuntu"
 
 # Register Glance image with Savanna
