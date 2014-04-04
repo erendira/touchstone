@@ -43,21 +43,19 @@ public class FlightCarrierPerformance extends Configured implements Tool {
     public static class Reduce
         extends Reducer<Text, IntWritable, Text, DoubleWritable> {
 //------------------------------------------------------------------------------
-            public void reduce(Text key, Iterable<IntWritable> values,
-                    Context context) throws IOException, InterruptedException {
+        public void reduce(Text key, Iterable<IntWritable> values,
+                Context context) throws IOException, InterruptedException {
 
-                String american_airlines = "AA";
-                int delay_count = 0;
-                int delay_total = 0;
+            int delay_count = 0;
+            int delay_total = 0;
 
-                if (key.toString().equals(american_airlines)){
-                    for (IntWritable val : values) {
-                        delay_count += 1;
-                        delay_total += val.get();
-                    }
-                    double avg_delay = delay_total / (double) delay_count; 
-                    context.write(key, new DoubleWritable(avg_delay));
-                }
+            for (IntWritable val : values) {
+                delay_count += 1;
+                delay_total += val.get();
+            }
+
+            double avg_delay = delay_total / (double) delay_count; 
+            context.write(key, new DoubleWritable(avg_delay));
         }
     }
 //------------------------------------------------------------------------------
