@@ -62,12 +62,12 @@ parameters:
 
   data_master_server_name:
     type: string
-    default: data_master
+    default: data-master
     description: Queue master
 
   data_worker1_server_name:
     type: string
-    default: data_worker1
+    default: data-worker1
     description: Queue worker #1
     
 resources:
