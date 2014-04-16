@@ -104,16 +104,25 @@ username = $RAX_USERNAME
 api_key = $RAX_APIKEY
 EOF
 
+# Delete any preexisting entities w/ same name
+echo ""
+array=( `raxmon-entities-list | grep $HOSTNAME | cut -d " " -f2 | cut -d "=" -f2` )
+for i in "${array[@]}"
+do
+   echo "Attempting deletion of existing entity with same label ($HOSTNAME): $i"
+   raxmon-entities-delete --id $i 2>/dev/null
+done
+
 ENTITY_ID=""
+echo ""
 if [ "`raxmon-entities-list | grep $HOSTNAME`" == "" ] ; then
-    echo "Creating new entity"
-    ENTITY_ID=`raxmon-entities-create --label $HOSTNAME --ip-addresses="alias=$IP_ADDR" | cut -d " " -f3`
-    echo $ENTITY_ID
+    ENTITY_ID=`raxmon-entities-create --label $HOSTNAME --ip-addresses="alias=$IP_ADDR" | cut -d " " -f4`
+    echo "Created new entity: $ENTITY_ID"
 else
-    echo "Using existing entity"
-    ENTITY_ID=`raxmon-entities-list | grep $HOSTNAME | cut -d " " -f2 | cut -d "=" -f2`
-    echo $ENTITY_ID
+    ENTITY_ID=`raxmon-entities-list | grep $HOSTNAME | cut -d " " -f2 | cut -d "=" -f2 | head -n1`
+    echo "Using existing entity with same label ($HOSTNAME): $ENTITY_ID"
 fi
+echo ""
 
 # Install agent
 echo "deb http://stable.packages.cloudmonitoring.rackspace.com/ubuntu-13.10-x86_64 cloudmonitoring main" >> /etc/apt/sources.list.d/rackspace-monitoring-agent.list
@@ -127,12 +136,13 @@ service rackspace-monitoring-agent start
 
 # Create checks, notifications, alerts
 CHECK_ID=`raxmon-checks-create --entity-id=$ENTITY_ID --type=agent.load_average | cut -d " " -f4`
-echo $CHECK_ID
+echo "New check created: $CHECK_ID"
 
 NOTIFICATIONS_ID=`raxmon-notifications-create --label example-email --type email --details="address=$EMAIL" | cut -d " " -f4`
-echo $NOTIFICATIONS_ID
+echo "New notification created: $NOTIFICATIONS_ID"
 
 PLAN_ID=`raxmon-notification-plans-create --label notification_plan_1 --critical-state $NOTIFICATIONS_ID --warning-state $NOTIFICATIONS_ID --ok-state $NOTIFICATIONS_ID | cut -d " " -f4`
-echo $PLAN_ID
+echo "New notification plan created: $PLAN_ID"
 
-raxmon-alarms-create --check-id=$CHECK_ID --criteria "if (metric[\"1m\"] >= 0.7) { return WARNING}" --notification-plan $PLAN_ID --entity-id $ENTITY_ID
+ALARM_ID=`raxmon-alarms-create --check-id=$CHECK_ID --criteria "if (metric[\"1m\"] >= 0.7) { return WARNING}" --notification-plan $PLAN_ID --entity-id $ENTITY_ID | cut -d " " -f4`
+echo "New alarm created: $ALARM_ID"
