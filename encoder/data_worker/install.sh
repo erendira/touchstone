@@ -2,7 +2,7 @@
 
 EXPECTEDARGS=4
 if [ $# -lt $EXPECTEDARGS ]; then
-    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <DATA_MASTER_IP> <MYSQL_PASS> <USE_SNET>"
+    echo "Usage: $0 <RAX_USERNAME> <RAX_APIKEY> <DATA_MASTER_IP> <MYSQL_PASS> <USE_SNET> <EMAIL>"
     exit 0
 fi
 
@@ -11,9 +11,12 @@ RAX_APIKEY=$2
 DATA_MASTER_IP=$3
 MYSQL_PASS=$4
 USE_SNET=$5
+EMAIL=$6
 MYSQL_DB="encoder"
 MYSQL_USER="rax"
 MYSQL_PORT="3306"
+HOSTNAME=`hostname`
+IP_ADDR=`hostname -I | cut -d " " -f1`
 
 # setup & install mysql client
 sudo apt-get update
@@ -89,3 +92,47 @@ sudo pip install supervisor
 sudo supervisorctl stop all
 sudo killall -9 supervisord
 sudo supervisord -c /etc/supervisord.conf
+
+
+# Monitoring as a Service setup
+
+# raxmon creds for RAX
+sudo pip install rackspace-monitoring-cli
+(cat | tee ~/.raxrc) << EOF
+[credentials]
+username = $RAX_USERNAME
+api_key = $RAX_APIKEY
+EOF
+
+ENTITY_ID=""
+if [ "`raxmon-entities-list | grep $HOSTNAME`" == "" ] ; then
+    echo "Creating new entity"
+    ENTITY_ID=`raxmon-entities-create --label $HOSTNAME --ip-addresses="alias=$IP_ADDR" | cut -d " " -f3`
+    echo $ENTITY_ID
+else
+    echo "Using existing entity"
+    ENTITY_ID=`raxmon-entities-list | grep $HOSTNAME | cut -d " " -f2 | cut -d "=" -f2`
+    echo $ENTITY_ID
+fi
+
+# Install agent
+echo "deb http://stable.packages.cloudmonitoring.rackspace.com/ubuntu-13.10-x86_64 cloudmonitoring main" >> /etc/apt/sources.list.d/rackspace-monitoring-agent.list
+curl https://monitoring.api.rackspacecloud.com/pki/agent/linux.asc | sudo apt-key add - 
+
+sudo apt-get update
+sudo apt-get install rackspace-monitoring-agent
+
+echo 1 | rackspace-monitoring-agent --setup --username $RAX_USERNAME --apikey $RAX_APIKEY
+service rackspace-monitoring-agent start
+
+# Create checks, notifications, alerts
+CHECK_ID=`raxmon-checks-create --entity-id=$ENTITY_ID --type=agent.load_average | cut -d " " -f4`
+echo $CHECK_ID
+
+NOTIFICATIONS_ID=`raxmon-notifications-create --label example-email --type email --details="address=$EMAIL" | cut -d " " -f4`
+echo $NOTIFICATIONS_ID
+
+PLAN_ID=`raxmon-notification-plans-create --label notification_plan_1 --critical-state $NOTIFICATIONS_ID --warning-state $NOTIFICATIONS_ID --ok-state $NOTIFICATIONS_ID | cut -d " " -f4`
+echo $PLAN_ID
+
+raxmon-alarms-create --check-id=$CHECK_ID --criteria "if (metric[\"1m\"] >= 0.7) { return WARNING}" --notification-plan $PLAN_ID --entity-id $ENTITY_ID
