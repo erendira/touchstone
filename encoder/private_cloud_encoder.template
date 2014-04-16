@@ -29,6 +29,10 @@ parameters:
     default: password123
     hidden: true
     description: MYSQL Root & RAX user password
+  
+  email:
+    type: string
+    description: Monitoring alert email address
 
   use_snet:
     type: string
@@ -135,7 +139,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch%
+            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch% %email%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
@@ -143,6 +147,7 @@ resources:
             "%mysql_pass%": { get_param: mysql_pass }
             "%use_snet%": { get_param: use_snet }
             "%branch%": { get_param: branch }
+            "%email%": { get_param: email }
 
 outputs:
 
