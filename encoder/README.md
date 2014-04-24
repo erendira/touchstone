@@ -1,6 +1,6 @@
 # Project Encoder
 
-Date: 04/17/2014
+Date: 04/24/2014
 
 ## Usage
 
@@ -11,8 +11,10 @@ heat stack-create encoder \
 --parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;email=<EMAIL_ADDRESS>;branch=master;use_snet=true" \
 -u "https://raw.github.com/metral/touchstone/master/encoder/public_cloud_encoder.template"
 ```
-
+===================
 **Rackspace Private Cloud**
+ * Tested on version 4.2.2
+ * Note: you may need to tweak the [default image used](https://github.com/metral/touchstone/blob/master/encoder/private_cloud_encoder.template#L11) in the template, as this is custom to your environment
 
 ```
 heat stack-create encoder \
