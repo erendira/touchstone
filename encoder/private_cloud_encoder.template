@@ -87,7 +87,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip% %branch%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %webapp_ip% %branch%
           params:
             "%webapp_ip%": { get_attr: [ webapp_server, first_address ] }
             "%branch%": { get_param: branch }
@@ -103,7 +103,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/webapp.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
@@ -123,7 +123,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass% %branch%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_master.sh | sudo bash /dev/stdin %mysql_pass% %branch%
           params:
             "%mysql_pass%": { get_param: mysql_pass }
             "%branch%": { get_param: branch }
@@ -139,7 +139,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch% %email%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/data_worker.sh | sudo bash /dev/stdin %rax_username% %rax_apikey% %data_master_ip% %mysql_pass% %use_snet% %branch% %email%
           params:
             "%rax_username%": { get_param: rax_username }
             "%rax_apikey%": { get_param: rax_apikey }
