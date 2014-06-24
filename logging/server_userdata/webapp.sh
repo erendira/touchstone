@@ -5,12 +5,16 @@ BRANCH=$1
 sudo apt-get update
 sudo apt-get install git -y
 
-git clone https://github.com/metral/touchstone.git ~/touchstone
+CLONE_PATH=~/touchstone
+git clone https://github.com/metral/touchstone.git $CLONE_PATH
+pushd $CLONE_PATH
 
 if [ "$BRANCH" != "master" ]; then
     git checkout -b $BRANCH origin/$BRANCH
 fi
 
-pushd ~/touchstone/logging/webapp
+pushd logging/webapp
 ./install.sh
+popd
+
 popd
