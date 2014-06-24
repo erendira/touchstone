@@ -26,7 +26,7 @@ parameters:
 
 resources:
 
-  infra_nodes:
+  webapp_nodes:
     type: "OS::Heat::ResourceGroup"
     properties:
       count: 1
