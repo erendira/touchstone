@@ -46,7 +46,7 @@ resources:
   webapp_nodes:
     type: "OS::Heat::ResourceGroup"
     properties:
-      count: 1
+      count: 2
       resource_def:
         type: "Rackspace::Cloud::Server"
         properties:
