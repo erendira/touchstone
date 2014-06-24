@@ -26,21 +26,21 @@ parameters:
 
 resources:
 
-  frontend_server:
-    type: "Rackspace::Cloud::Server"
-    properties:
-      flavor: 2 GB Performance
-      image: { get_param: image }
-      name: "frontend-1"
-      user_data:
-        str_replace:
-          template: |
-            #!/bin/bash
-            apt-get update && apt-get install curl -y
-            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% "%webapp_ip_addrs%"
-          params:
-            "%branch%": { get_param: branch }
-            "%webapp_ip_addrs%": { get_attr: [webapp_nodes, privateIPv4] }
+    #  frontend_server:
+    #    type: "Rackspace::Cloud::Server"
+    #    properties:
+    #      flavor: 2 GB Performance
+    #      image: { get_param: image }
+    #      name: "frontend-1"
+    #      user_data:
+    #        str_replace:
+    #          template: |
+    #            #!/bin/bash
+    #            apt-get update && apt-get install curl -y
+    #            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% "%webapp_ip_addrs%"
+    #          params:
+    #            "%branch%": { get_param: branch }
+    #            "%webapp_ip_addrs%": { get_attr: [webapp_nodes, privateIPv4] }
 
   webapp_nodes:
     type: "OS::Heat::ResourceGroup"
