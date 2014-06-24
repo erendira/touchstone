@@ -1,0 +1,51 @@
+heat_template_version: 2013-05-23
+
+description: |
+  A template that establishes a Django webstack with logging capabilies using Elastic Search, Logstash & Kibana
+
+parameters:
+
+  image:
+    description: Rackspace Cloud Server Image (Distribution)
+    type: string
+    default: Ubuntu 14.04 LTS (Trusty Tahr)
+    constraints:
+    - allowed_values:
+      - Ubuntu 14.04 LTS (Trusty Tahr)
+      description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 14.04 LTS (Trusty Tahr)
+
+  branch:
+    type: string
+    default: master
+    description: Repo branch to use
+    constraints:
+    - allowed_values:
+      - master
+      - dev
+      description: Must be valid repo branch
+
+resources:
+
+  infra_nodes:
+    type: "OS::Heat::ResourceGroup"
+    properties:
+      count: 1
+      resource_def:
+        type: "Rackspace::Cloud::Server"
+        properties:
+            flavor: 2 GB Performance
+            image: { get_param: image }
+            user_data:
+                str_replace:
+                template: |
+                    #!/bin/bash
+                    apt-get update && apt-get install curl -y
+                    curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
+                params:
+                    "%branch%": { get_param: branch }
+
+#outputs:
+#
+#  frontend_url:
+#      value: { get_attr: [ frontend_server, accessIPv4 ] }
+#      description: The landing page url for the webapp
