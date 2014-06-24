@@ -40,7 +40,7 @@ resources:
             curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% "%webapp_ip_addrs%"
           params:
             "%branch%": { get_param: branch }
-            "%webapp_ip_addrs%": { get_attr: [webapp_nodes, privateIPv4] }
+            "%webapp_ip_addrs%": { Fn::Join: [",", { get_attr: [webapp_nodes, privateIPv4] }] } 
 
   webapp_nodes:
     type: "OS::Heat::ResourceGroup"
