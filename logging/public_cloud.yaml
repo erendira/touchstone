@@ -37,10 +37,11 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% "%webapp_ip_addrs%"
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
           params:
             "%branch%": { get_param: branch }
-            "%webapp_ip_addrs%": { get_attr: [webapp_nodes, privateIPv4] }
+            "%webapp_ip1%": { get_attr: [webapp_nodes, privateIPv4, 0] }
+            "%webapp_ip2%": { get_attr: [webapp_nodes, privateIPv4, 1] }
 
   webapp_nodes:
     type: "OS::Heat::ResourceGroup"
