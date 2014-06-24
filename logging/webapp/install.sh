@@ -17,6 +17,9 @@ pushd $WEBAPP_PATH
 virtualenv .
 popd
 
+# get hostname
+HOSTNAME=`xenstore-read vm-data/hostname`
+
 # install python packages
 sudo $WEBAPP_PATH/bin/pip install django gunicorn
 
@@ -35,6 +38,7 @@ sed "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" $GUNICORN_TEMPLATE > $GUNICORN
 chmod +x $GUNICORN
 
 sed -e "s#{DJANGO_SECRET_KEY}#$DJANGO_SECRET_KEY#g" \
+    -e "s#{HOSTNAME}#$HOSTNAME#g" \
     env_settings_template.py | \
     tee django/$PROJECT_NAME/env_settings.py > /dev/null
 

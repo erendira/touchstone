@@ -2,11 +2,13 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import RequestContext
+from helloworld_proj import env_settings
 #-------------------------------------------------------------------------------
 def home_index(request):
     page = "home"
     data = {
             'page': page,
+            'hostname': env_settings.HOSTNAME,
             }
     template = "home/index.html"
 
