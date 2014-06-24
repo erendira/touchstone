@@ -1,0 +1,24 @@
+#!/bin/bash
+
+BRANCH=$1
+WEBAPP_IP_ADDRS=$2
+
+echo $WEBAPP_IP_ADDRS
+
+#sudo apt-get update
+#sudo apt-get install git -y
+#
+#CLONE_PATH=~/touchstone
+#git clone https://github.com/metral/touchstone.git $CLONE_PATH
+#pushd $CLONE_PATH
+#
+#if [ "$BRANCH" != "master" ]; then
+#    git checkout -b $BRANCH origin/$BRANCH
+#fi
+#
+#pushd logging/frontend
+#./install.sh
+#./update.sh $WEBAPP_IP1 $WEBAPP_IP2
+#popd
+#
+#popd
