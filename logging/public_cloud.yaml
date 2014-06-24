@@ -37,7 +37,7 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/encoder/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
           params:
             "%branch%": { get_param: branch }
             "%webapp_ip1%": { get_attr: [webapp_nodes, privateIPv4, 0] }
