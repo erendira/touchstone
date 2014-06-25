@@ -26,7 +26,7 @@ parameters:
 
 resources:
 
-  frontend_server:
+  frontend_server1:
     type: "Rackspace::Cloud::Server"
     properties:
       flavor: 2 GB Performance
@@ -40,10 +40,10 @@ resources:
             curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
           params:
             "%branch%": { get_param: branch }
-            "%webapp_ip1%": { get_attr: [webapp_nodes, privateIPv4, 0] }
-            "%webapp_ip2%": { get_attr: [webapp_nodes, privateIPv4, 1] }
+            "%webapp_ip1%": { get_attr: [webapp_nodes1, privateIPv4, 0] }
+            "%webapp_ip2%": { get_attr: [webapp_nodes1, privateIPv4, 1] }
 
-  webapp_nodes:
+  webapp_nodes1:
     type: "OS::Heat::ResourceGroup"
     properties:
       count: 2
@@ -61,7 +61,42 @@ resources:
                     params:
                         "%branch%": { get_param: branch }
 
-outputs:
-  frontend_url:
-      value: { get_attr: [webapp_nodes, privateIPv4] }
-      description: The landing page url for the webapp
+  frontend_server2:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 2 GB Performance
+      image: { get_param: image }
+      name: "frontend-1"
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            apt-get update && apt-get install curl -y
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
+          params:
+            "%branch%": { get_param: branch }
+            "%webapp_ip1%": { get_attr: [webapp_nodes2, privateIPv4, 0] }
+            "%webapp_ip2%": { get_attr: [webapp_nodes2, privateIPv4, 1] }
+
+  webapp_nodes2:
+    type: "OS::Heat::ResourceGroup"
+    properties:
+      count: 2
+      resource_def:
+        type: "Rackspace::Cloud::Server"
+        properties:
+            flavor: 2 GB Performance
+            image: { get_param: image }
+            user_data:
+                str_replace:
+                    template: |
+                        #!/bin/bash
+                        apt-get update && apt-get install curl -y
+                        curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
+                    params:
+                        "%branch%": { get_param: branch }
+
+#outputs:
+#  frontend_url:
+#      value: { get_attr: [webapp_nodes, privateIPv4] }
+#      description: The landing page url for the webapp
