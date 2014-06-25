@@ -31,7 +31,7 @@ resources:
     properties:
       name: "lb-frontend"
       nodes:
-      - addresses: { get_attr: [frontend_server1, privateIPv4] }
+      - addresses: [get_attr: [frontend_server1, privateIPv4], get_attr: [frontend_server2, privateIPv4]]
         port: 80
         condition: ENABLED
       port: 80
@@ -118,8 +118,7 @@ resources:
                         curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
                     params:
                         "%branch%": { get_param: branch }
-
-#outputs:
-#  frontend_url:
-#      value: { get_attr: [webapp_nodes, privateIPv4] }
-#      description: The landing page url for the webapp
+outputs:
+  lb_public_ip:
+    description: The public IP address of the load balancer
+    value: { get_attr: [load_balancer_frontend, PublicIp]}  
