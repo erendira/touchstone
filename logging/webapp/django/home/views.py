@@ -6,11 +6,12 @@ from helloworld_proj import env_settings
 #-------------------------------------------------------------------------------
 def home_index(request):
     page = "home"
-    #referrer = request.META['SERVER_NAME']
-    referrer = request
+    referrer_http_host = request.META['HTTP_HOST']
+    referrer_remote_addr = request.META['REMOTE_ADDR']
     data = {
             'page': page,
-            'referrer': referrer,
+            'referrer_http_host': referrer_http_host,
+            'referrer_remote_addr': referrer_remote_addr,
             'hostname': env_settings.HOSTNAME,
             }
     template = "home/index.html"
