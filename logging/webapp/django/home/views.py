@@ -6,7 +6,8 @@ from helloworld_proj import env_settings
 #-------------------------------------------------------------------------------
 def home_index(request):
     page = "home"
-    referrer = request.META['SERVER_NAME']
+    #referrer = request.META['SERVER_NAME']
+    referrer = request
     data = {
             'page': page,
             'referrer': referrer,
