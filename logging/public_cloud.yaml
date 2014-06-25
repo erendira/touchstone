@@ -34,20 +34,20 @@ resources:
       - addresses: { get_attr: [frontend_server1, privateIPv4] }
         port: 80
         condition: ENABLED
-    port: 80
-    protocol: HTTP
-    algorithm: "LEAST_CONNECTIONS"
-    virtualIps:
-    - type: PUBLIC
-      ipVersion: IPV4
-    healthMonitor:
-      attemptsBeforeDeactivation: 3
-      delay: 10
-      timeout: 120
-      type: HTTP
-      path: "/"
-      statusRegex: "."
-      bodyRegex: "."
+      port: 80
+      protocol: HTTP
+      algorithm: "LEAST_CONNECTIONS"
+      virtualIps:
+      - type: PUBLIC
+        ipVersion: IPV4
+      healthMonitor:
+        attemptsBeforeDeactivation: 3
+        delay: 10
+        timeout: 120
+        type: HTTP
+        path: "/"
+        statusRegex: "."
+        bodyRegex: "."
 
   frontend_server1:
     type: "Rackspace::Cloud::Server"
