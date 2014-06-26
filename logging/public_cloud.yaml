@@ -61,7 +61,7 @@ resources:
         timeout: 120
         type: HTTP
         path: "/"
-        statusRegex: "^[234][0-9][0-9]$"
+        statusRegex: "^(500|40[1348])$"
         bodyRegex: ""
 
   frontend_server1:
