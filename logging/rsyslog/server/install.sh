@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sed -i "s/#\$ModLoad imtcp/\$ModLoad imtcp/g" /etc/rsyslog.conf 
-sed -i "s/#\$InputTCPServerRun 514/\$InputTCPServerRun 514/g" /etc/rsyslog.conf
-service rsyslog restart
+sudo cp -f ./50-default.conf /etc/rsyslog.d/
+sudo cp -f ./rsyslog.conf /etc/
+sudo service rsyslog restart
