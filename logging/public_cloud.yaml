@@ -61,8 +61,8 @@ resources:
         timeout: 120
         type: HTTP
         path: "/"
-        statusRegex: "."
-        bodyRegex: "."
+        statusRegex: "^[234][0-9][0-9]$"
+        bodyRegex: "*"
 
   frontend_server1:
     type: "Rackspace::Cloud::Server"
