@@ -7,8 +7,10 @@ if [ $# -lt $EXPECTEDARGS ]; then
 fi
 
 RSYSLOG_SERVER_IP=$1
+HOSTNAME=`hostname`
 
 sed -e "s#{RSYSLOG_SERVER_IP}#$RSYSLOG_SERVER_IP#g" \
+    -e "s#{HOSTNAME}#$HOSTNAME#g" \
     nginx_template.conf | \
     tee /etc/rsyslog.d/nginx.conf > /dev/null
 
