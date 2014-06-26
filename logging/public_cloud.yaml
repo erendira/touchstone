@@ -26,6 +26,21 @@ parameters:
 
 resources:
 
+  rsyslog_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 2 GB Performance
+      image: { get_param: image }
+      name: "rsyslog"
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            apt-get update && apt-get install curl -y
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_server.sh | sudo bash /dev/stdin %branch%
+          params:
+            "%branch%": { get_param: branch }
+
   load_balancer_frontend:
     type: "Rackspace::Cloud::LoadBalancer"
     properties:
@@ -61,10 +76,12 @@ resources:
             #!/bin/bash
             apt-get update && apt-get install curl -y
             curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
           params:
             "%branch%": { get_param: branch }
             "%webapp_ip1%": { get_attr: [webapp_nodes1, privateIPv4, 0] }
             "%webapp_ip2%": { get_attr: [webapp_nodes1, privateIPv4, 1] }
+            "%rsyslog_server_ip_%": { get_attr: [rsyslog_server, privateIPv4] }
 
   webapp_nodes1:
     type: "OS::Heat::ResourceGroup"
@@ -96,10 +113,12 @@ resources:
             #!/bin/bash
             apt-get update && apt-get install curl -y
             curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/frontend.sh | sudo bash /dev/stdin %branch% %webapp_ip1% %webapp_ip2%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
           params:
             "%branch%": { get_param: branch }
             "%webapp_ip1%": { get_attr: [webapp_nodes2, privateIPv4, 0] }
             "%webapp_ip2%": { get_attr: [webapp_nodes2, privateIPv4, 1] }
+            "%rsyslog_server_ip_%": { get_attr: [rsyslog_server, privateIPv4] }
 
   webapp_nodes2:
     type: "OS::Heat::ResourceGroup"
@@ -118,6 +137,7 @@ resources:
                         curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
                     params:
                         "%branch%": { get_param: branch }
+
 outputs:
   lb_public_ip:
     description: The public IP address of the load balancer
