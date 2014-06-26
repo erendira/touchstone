@@ -81,7 +81,7 @@ resources:
             "%branch%": { get_param: branch }
             "%webapp_ip1%": { get_attr: [webapp_nodes1, privateIPv4, 0] }
             "%webapp_ip2%": { get_attr: [webapp_nodes1, privateIPv4, 1] }
-            "%rsyslog_server_ip_%": { get_attr: [rsyslog_server, privateIPv4] }
+            "%rsyslog_server_ip%": { get_attr: [rsyslog_server, privateIPv4] }
 
   webapp_nodes1:
     type: "OS::Heat::ResourceGroup"
@@ -118,7 +118,7 @@ resources:
             "%branch%": { get_param: branch }
             "%webapp_ip1%": { get_attr: [webapp_nodes2, privateIPv4, 0] }
             "%webapp_ip2%": { get_attr: [webapp_nodes2, privateIPv4, 1] }
-            "%rsyslog_server_ip_%": { get_attr: [rsyslog_server, privateIPv4] }
+            "%rsyslog_server_ip%": { get_attr: [rsyslog_server, privateIPv4] }
 
   webapp_nodes2:
     type: "OS::Heat::ResourceGroup"
