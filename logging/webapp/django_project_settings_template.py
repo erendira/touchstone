@@ -163,16 +163,6 @@ LOGGING = {
 		    'filename': "/var/log/gunicorn/access.log",
 		    'formatter': 'standard',
 		},
-	'exceptions': {
-		    'class':'logging.FileHandler',
-		    'filename': "/var/log/django/exceptions.log",
-		    'formatter': 'standard',
-		},
-	'webapps': {
-		    'class':'logging.FileHandler',
-		    'filename': "/var/log/django/apps.log",
-		    'formatter': 'standard',
-		},
     },
 
     # Loggers (where does the log come from)
@@ -185,10 +175,11 @@ LOGGING = {
 	    'gunicorn.access': {
 		    'level': 'INFO',
 		    'handlers': ['gunicorn_access'],
-		    'propagate': False,
+		    'propagate': True,
 	    },
 	    'django': {
-		    'level': 'WARNING',
+		    'level': 'INFO',
+		    'handlers': ['gunicorn_error'],
 		    'handlers': ['exceptions'],
 		    'propagate': True,
 	    },
@@ -198,7 +189,7 @@ LOGGING = {
 MY_LOGGERS = {}
 for app in MY_APPS:
     MY_LOGGERS[app] = {
-        'handlers': ['webapps'],
+        'handlers': ['gunicorn_access'],
         'level': 'DEBUG',
         'propagate': True,
     }
