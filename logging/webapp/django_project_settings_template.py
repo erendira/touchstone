@@ -180,7 +180,6 @@ LOGGING = {
 	    'django': {
 		    'level': 'INFO',
 		    'handlers': ['gunicorn_error'],
-		    'handlers': ['exceptions'],
 		    'propagate': True,
 	    },
     }
