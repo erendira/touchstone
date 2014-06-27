@@ -24,19 +24,33 @@ HOSTNAME=`xenstore-read vm-data/hostname`
 sudo $WEBAPP_PATH/bin/pip install django gunicorn
 
 # globals
-GUNICORN=gunicorn.sh
 GUNICORN_TEMPLATE="gunicorn_template.sh"
 PROJECT_NAME="helloworld_proj"
 
 # clean up any old conf & scripts
-sudo rm $GUNICORN > /dev/null 2>&1
+sudo rm gunicorn.sh > /dev/null 2>&1
 sudo rm /etc/supervisord.conf > /dev/null 2>&1
 sudo rm django/$PROJECT_NAME/env_settings.py > /dev/null 2>&1
 
 # setup gunicorn script from template
-sed "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" $GUNICORN_TEMPLATE > $GUNICORN
-chmod +x $GUNICORN
+BIND_HOST_DEV="eth1"
+BIND_HOST=$(ip addr show $BIND_HOST_DEV | grep -o 'inet [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+' | grep -o [0-9].*)
 
+# setup gunicorn.sh
+sed -e "s#{WEBAPP_PATH}#$WEBAPP_PATH#g" \
+    -e "s#{BIND_HOST}#$BIND_HOST#g" \
+    gunicorn_template.sh | \
+    tee gunicorn.sh > /dev/null
+chmod +x gunicorn.sh
+
+# setup django project settings.py 
+FQDN="foobar-fqdn.rackspace.com"
+sed -e "s#{BIND_HOST}#$BIND_HOST#g" \
+    -e "s#{FQDN}#$FQDN#g" \
+    django_project_settings_template.sh | \
+    tee django/$PROJECT_NAME/settings.py > /dev/null
+
+# setup environmental settings
 sed -e "s#{DJANGO_SECRET_KEY}#$DJANGO_SECRET_KEY#g" \
     -e "s#{HOSTNAME}#$HOSTNAME#g" \
     env_settings_template.py | \
@@ -47,6 +61,7 @@ PWD=`pwd`
 sed "s#{WEBAPP_PATH}#$PWD#g" supervisord_template.conf | \
     sudo tee /etc/supervisord.conf > /dev/null
 
+sudo mkdir -p /var/log/django
 sudo mkdir -p /var/log/gunicorn
 sudo mkdir -p /var/log/supervisord
 sudo $WEBAPP_PATH/bin/pip install supervisor
