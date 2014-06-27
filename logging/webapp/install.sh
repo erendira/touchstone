@@ -47,7 +47,7 @@ chmod +x gunicorn.sh
 FQDN="foobar-fqdn.rackspace.com"
 sed -e "s#{BIND_HOST}#$BIND_HOST#g" \
     -e "s#{FQDN}#$FQDN#g" \
-    django_project_settings_template.sh | \
+    django_project_settings_template.py | \
     tee django/$PROJECT_NAME/settings.py > /dev/null
 
 # setup environmental settings
