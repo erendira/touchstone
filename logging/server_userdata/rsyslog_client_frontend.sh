@@ -14,7 +14,7 @@ if [ "$BRANCH" != "master" ]; then
     git checkout -b $BRANCH origin/$BRANCH
 fi
 
-pushd logging/rsyslog/client
+pushd logging/rsyslog/client/frontend
 ./install.sh $RSYSLOG_SERVER_IP
 popd
 
