@@ -1,7 +1,6 @@
 #!/bin/bash
 
 BRANCH=$1
-ELK_SERVER_IP=$2
 
 sudo apt-get update
 sudo apt-get install git -y
@@ -14,8 +13,8 @@ if [ "$BRANCH" != "master" ]; then
     git checkout -b $BRANCH origin/$BRANCH
 fi
 
-pushd logging/rsyslog/server
-./install.sh $ELK_SERVER_IP
+pushd logging/elk
+./install.sh
 popd
 
 popd

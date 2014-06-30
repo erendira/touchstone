@@ -26,6 +26,21 @@ parameters:
 
 resources:
 
+  elk_server:
+    type: "Rackspace::Cloud::Server"
+    properties:
+      flavor: 2 GB Performance
+      image: { get_param: image }
+      name: "elk"
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            apt-get update && apt-get install curl -y
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/elk.sh | sudo bash /dev/stdin %branch%
+          params:
+            "%branch%": { get_param: branch }
+
   rsyslog_server:
     type: "Rackspace::Cloud::Server"
     properties:
@@ -37,9 +52,10 @@ resources:
           template: |
             #!/bin/bash
             apt-get update && apt-get install curl -y
-            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_server.sh | sudo bash /dev/stdin %branch%
+            curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_server.sh | sudo bash /dev/stdin %branch% %elk_server_ip%
           params:
             "%branch%": { get_param: branch }
+            "%elk_server_ip%": { get_attr: [elk_server, privateIPv4] }
 
   load_balancer_frontend:
     type: "Rackspace::Cloud::LoadBalancer"
