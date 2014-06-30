@@ -101,6 +101,7 @@ resources:
                         curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client_webapp.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
                     params:
                         "%branch%": { get_param: branch }
+                        "%rsyslog_server_ip%": { get_attr: [rsyslog_server, privateIPv4] }
 
   frontend_server2:
     type: "Rackspace::Cloud::Server"
@@ -139,6 +140,7 @@ resources:
                         curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client_webapp.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
                     params:
                         "%branch%": { get_param: branch }
+                        "%rsyslog_server_ip%": { get_attr: [rsyslog_server, privateIPv4] }
 
 outputs:
   lb_public_ip:
