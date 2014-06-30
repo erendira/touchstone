@@ -98,6 +98,7 @@ resources:
                         #!/bin/bash
                         apt-get update && apt-get install curl -y
                         curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
+                        curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client_webapp.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
                     params:
                         "%branch%": { get_param: branch }
 
@@ -135,6 +136,7 @@ resources:
                         #!/bin/bash
                         apt-get update && apt-get install curl -y
                         curl -sKS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/webapp.sh | sudo bash /dev/stdin %branch%
+                        curl -skS -L https://raw.github.com/metral/touchstone/%branch%/logging/server_userdata/rsyslog_client_webapp.sh | sudo bash /dev/stdin %branch% %rsyslog_server_ip%
                     params:
                         "%branch%": { get_param: branch }
 
