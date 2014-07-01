@@ -164,4 +164,4 @@ outputs:
     value: { get_attr: [load_balancer_frontend, PublicIp]}
   elk_public_ip:
     description: The public IP address of the ELK stack
-    value: { get_attr: [elk_server, PublicIp]}
+    value: { get_attr: [elk_server, accessIPv4]}
