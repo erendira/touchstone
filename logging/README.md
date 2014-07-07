@@ -1,4 +1,4 @@
-# Project Encoder
+# Project Logging
 
 Date: 07/07/2014
 
@@ -18,6 +18,17 @@ feeds into a log aggregator and then filters, stores & allows for the
 visulization of the logs.
 
 ## Webapp Flow
+  * When the user visits the webapp, they will be presented with a simple Hello World page which displays the hostname of the webapp server that fulfilled the request
+  * Behind the scenes, the Cloud Load Balancer is cycling through 2 frontend nodes tasked with receiving HTTP requests
+  * The frontend nodes each manage a set of 2 webapp servers that it itself cycles through as well to forward the incoming requests
+  * The webapp then renders a page with the hostname of the server that is processing the request to demonstrate the redundancy taking place
+  * The Cloud Load Balancer also monitors the health of the frontend + webapp combo, by insuring that these nodes in the load balancing layer are not erroring out with HTTP errors of 5XX - if they do, they are pulled from the load balancing pool
+  * The frontend & webapp nodes are simultaneously feeding all of their raw, noteworthy logs (ie Nginx + Gunicorn/Django) to an rsyslog server which functions as a central log aggregate
+  * The rsyslog server then passes the raw logs to an ELK stack (Elasticsearch + Logstash + Kibana) which filters, stores and provides visualization for the logs based on some basic logic releveant to the logs collected
+    * ie.
+      * Logstash filters the Nginx & Gunicorn access-logs to parse relevant request header information
+      * Logstash then passess the filtered logs to Elasticsearch, where they are stored
+      * Kibana communicates with Elasticsearch to provide a visualization layer to view the parsed logs
  
 ## Rackspace Cloud Services Used
   * Cloud Servers
