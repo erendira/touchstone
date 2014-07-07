@@ -1,5 +1,5 @@
 ## Touchstone
-Date: 04/08/2014
+Last Major Update: 07/07/2014
 
 ## Introduction
 Touchstone is a collection of projects with the intention of showcasing the following lessons & Rackspace Cloud capabilties:
