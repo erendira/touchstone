@@ -27,7 +27,7 @@ visulization of the logs.
   * The rsyslog server then passes the raw logs to an ELK stack (Elasticsearch + Logstash + Kibana) which filters, stores and provides visualization for the logs based on some basic logic releveant to the logs collected
     * i.e.
       * Logstash filters the Nginx & Gunicorn access-logs to parse relevant request header information
-      * Logstash then passess the filtered logs to Elasticsearch, where they are stored
+      * Logstash then passes the filtered logs to Elasticsearch, where they are stored
       * Kibana communicates with Elasticsearch to provide a visualization layer to view the parsed logs
   * If one wishes, you can easily increase the number of frontend & webapp nodes used by modifying the heat template to make the initial architecture even more redundant 
 
