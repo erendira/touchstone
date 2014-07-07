@@ -44,4 +44,4 @@ visulization of the logs.
     * **Middle Layers**: Webapp (Gunicorn + Django)
     * **Log Server**: Log Aggregator (Rsyslog)
     * **Analysis Stack**: Logstash + Elasticsearch + Kibana
-    <div><img src="https://raw.github.com/metral/touchstone/dev/logging/extras/logging.jpg" height="600" width="700"></div>
+    <div><img src="https://raw.github.com/metral/touchstone/master/logging/extras/logging.jpg" height="600" width="700"></div>
