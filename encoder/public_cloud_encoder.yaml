@@ -8,11 +8,11 @@ parameters:
   image:
     description: Rackspace Cloud Server Image (Distribution)
     type: string
-    default: Ubuntu 13.10 (Saucy Salamander)
+    default: Ubuntu 14.04 LTS (Trusty Tahr)
     constraints:
     - allowed_values:
-      - Ubuntu 13.10 (Saucy Salamander)
-      description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 13.10 (Saucy Salamander)
+      - Ubuntu 14.04 LTS (Trusty Tahr)
+      description: Must be a valid Rackspace Cloud Server Image, default is Ubuntu 14.04 LTS (Trusty Tahr)
 
   rax_username:
     type: string
