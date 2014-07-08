@@ -11,7 +11,7 @@ Touchstone is a collection of projects with the intention of showcasing the foll
 
 ## Notes
   * Projects are based on an OpenStack Heat [HOT](http://docs.openstack.org/developer/heat/template_guide/hot_guide.html) template (defined in YAML) that self-provisions, installs and configures the project when provided into a Heat enabled environment.
-  * There are templates that function for both Rackspace's Public Cloud & Rackspace's Private Cloud
+  * Where applicable, projects could have templates that function for both Rackspace's Public Cloud & Rackspace's Private Cloud
     * On public cloud, it is tailored to consume [Rackspace's Heat Resource Types](http://docs.rackspace.com/orchestration/api/v1/orchestration-devguide/content/GET_resource_type_list_v1__tenant_id__resource_types_Stack_Resources.html#GET_resource_type_list_v1__tenant_id__resource_types_Stack_Resources-Response)
     * On private cloud, it consumes the standard [Heat Resource Types](http://docs.openstack.org/developer/heat/template_guide/openstack.html)
   * Rackspace's Public Cloud Orchestration (aka "Heat") capabilities are currently available via API only
