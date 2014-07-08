@@ -9,17 +9,17 @@ Date: 04/24/2014
 ```
 heat stack-create encoder \
 --parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;email=<EMAIL_ADDRESS>;branch=master;use_snet=true" \
--u "https://raw.github.com/metral/touchstone/master/encoder/public_cloud_encoder.template"
+-u "https://raw.github.com/metral/touchstone/master/encoder/public_cloud_encoder.yaml"
 ```
 ===================
 **Rackspace Private Cloud**
  * Tested on version 4.2.2
- * Note: you may need to tweak the [default image used](https://github.com/metral/touchstone/blob/master/encoder/private_cloud_encoder.template#L11) in the template, as this is custom to your environment
+ * Note: you may need to tweak the [default image used](https://github.com/metral/touchstone/blob/master/encoder/private_cloud_encoder.yaml#L11) in the template, as this is custom to your environment
 
 ```
 heat stack-create encoder \
 --parameters="rax_username=$OS_USERNAME;rax_apikey=$OS_PASSWORD;email=<EMAIL_ADDRESS>;branch=master;use_snet=false" \
--u "https://raw.github.com/metral/touchstone/master/encoder/private_cloud_encoder.template"
+-u "https://raw.github.com/metral/touchstone/master/encoder/private_cloud_encoder.yaml"
 ```
 
 ***Note:*** Parameters "rax\_username" & "rax\_apikey" refer to the Rackspace Public Cloud Username & API Key as all media files are stored on Rackspace Cloud Files in the Public Cloud. Parameter "email" refers to an email address you would like to register to receive notifications made available by the integrated Monitoring as a Service capabilites via [Rackspace Cloud Intelligence](https://intelligence.rackspace.com/overview?query=entityIds~enTlzdDiyh!duration~86400000!points~500!mode~overview) and the [Getting Started with Rackspace Monitoring Guide](http://www.rackspace.com/knowledge_center/article/getting-started-with-rackspace-monitoring-cli) to watch the data_worker node's CPU load average as created in its [install.sh](https://github.com/metral/touchstone/blob/master/encoder/data_worker/install.sh)
