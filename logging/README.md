@@ -39,9 +39,9 @@ visulization of the logs.
 
 ## Architecture
   * Format: Web Architecture
-    * **Load Balancer**: Client Load Balancer (Cloud Load Balancer / HAProxy)
-    * **Front Ends**: Client HTTP Server (Nginx)
-    * **Middle Layers**: Webapp (Gunicorn + Django)
-    * **Log Server**: Log Aggregator (Rsyslog)
+    * **Load Balancing**: Rackspace Cloud Load Balancer
+    * **Front Ends**: Nginx as Client HTTP Server
+    * **Middle Layers / Webapp**: Gunicorn + Django
+    * **Log Server**: Rsyslog as a Log Aggregator
     * **Analysis Stack**: Logstash + Elasticsearch + Kibana
     <div><img src="https://raw.github.com/metral/touchstone/master/logging/extras/logging.jpg" height="600" width="700"></div>
