@@ -34,13 +34,13 @@ sudo apt-get install python-sphinx -y
 
 MACHINE_TYPE=`uname -m`
 if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-    wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
-    tar xvf ffmpeg*
+    #wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-2.1.3-64bit-static.tar.bz2
+    tar xvf ffmpeg*64bit*
     mv ffmpeg*/ff* /usr/local/bin/
     mv ffmpeg*/qt* /usr/local/bin/
 else
-    wget http://ffmpeg.gusari.org/static/32bit/ffmpeg.static.32bit.2014-03-01.tar.gz
-    tar xvf ffmpeg*
+    #wget http://ffmpeg.gusari.org/static/32bit/ffmpeg.static.32bit.2014-03-01.tar.gz
+    tar xvf ffmpeg*32bit*
     mv ff* /usr/local/bin/
 fi
 rm -rf ffmpeg*

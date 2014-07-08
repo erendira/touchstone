@@ -36,7 +36,7 @@ def converter_index(request):
     uploaded_cont = cf.create_container(uploaded_cont_name)
     completed_cont = cf.create_container(completed_cont_name)
 
-    origin = "https://" + request.META['SERVER_NAME']
+    origin = "https://" + request.META['HTTP_HOST']
     uploaded_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
     key = cf.get_account_metadata()['x-account-meta-temp-url-key']
