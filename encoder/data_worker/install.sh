@@ -27,7 +27,7 @@ sudo apt-get install python-setuptools python-mysqldb -y
 sudo easy_install pip
 sudo pip install gearman pyrax
 sudo pip install --upgrade pyrax
-sudo pip install --upgrade six==1.5.2 requests==2.2.1
+sudo pip install --upgrade six==1.7.0 requests==2.2.1
 
 # install ffmpeg & deps
 sudo apt-get install python-sphinx -y

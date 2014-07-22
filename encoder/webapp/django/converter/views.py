@@ -19,13 +19,10 @@ pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
 
-meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
-cf.set_account_metadata(meta)
-
 # Only use service net for cloudfiles if on public cloud, not private
 if env_settings.USE_SNET == "true":
     snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
-    snet_cf.set_account_metadata(meta)
+    #snet_cf.set_account_metadata(meta)
 else:
     snet_cf = cf
 
@@ -39,11 +36,8 @@ def converter_index(request):
     origin = "https://" + request.META['HTTP_HOST']
     uploaded_cont.set_metadata({'Access-Control-Allow-Origin': origin})
 
-    key = cf.get_account_metadata()['x-account-meta-temp-url-key']
-
     orig_uuid = str(uuid.uuid4())
-    uploaded_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60, 'PUT',
-            key=key)
+    uploaded_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60, 'PUT')
 
     redirect_url = "/converter/uploaded/?orig_uuid=" + orig_uuid
 
@@ -68,12 +62,11 @@ def uploaded(request):
 
     try:
 
-        key = cf.get_account_metadata()['x-account-meta-temp-url-key']
         public_dl_url = cf.get_temp_url(uploaded_cont_name, orig_uuid, 60*60*3,
-                'GET', key=key) + "&filename=" + filename
+                'GET') + "&filename=" + filename
 
         snet_dl_url = snet_cf.get_temp_url(uploaded_cont_name, orig_uuid,
-                60*60*3, 'GET', key=key) + "&filename=" + filename
+                60*60*3, 'GET') + "&filename=" + filename
 
         job_data = {
                 'orig_uuid': orig_uuid,

@@ -28,7 +28,7 @@ sudo apt-get install python-virtualenv -y
 
 sudo pip install django gunicorn pyrax jsonfield gearman
 sudo pip install --upgrade pyrax
-sudo pip install --upgrade six==1.5.2 requests==2.2.1
+sudo pip install --upgrade six==1.7.0 requests==2.2.1
 
 # setup virtualenv for webapp
 PWD=`pwd`
