@@ -21,13 +21,9 @@ pyrax.set_credential_file(creds_file, region)
 
 cf = pyrax.cloudfiles
 
-meta = {"x-account-meta-temp-url-key": "a_bad_key_to_use"}
-cf.set_account_metadata(meta)
-
 # Only use service net for cloudfiles if on public cloud, not private
 if env_settings.USE_SNET == "true":
     snet_cf = pyrax.connect_to_cloudfiles(region, public=False)
-    snet_cf.set_account_metadata(meta)
 else:
     snet_cf = cf
 
@@ -174,14 +170,12 @@ class Utils:
         snet_cf.upload_file(completed_cont_name, 
                 file_or_path=filepath, obj_name=obj_name)
 
-        key = cf.get_account_metadata()['x-account-meta-temp-url-key']
-
         root, ext = os.path.splitext(filename)
         encoded_filename = root + "." + format
         public_dl_url = cf.get_temp_url(completed_cont_name, obj_name, 
-                60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
+                60*60*3, 'GET') + "&filename=" + encoded_filename
         snet_dl_url = snet_cf.get_temp_url(completed_cont_name, obj_name,
-                60*60*3, 'GET', key=key) + "&filename=" + encoded_filename
+                60*60*3, 'GET') + "&filename=" + encoded_filename
 
         urls[format] = public_dl_url
         urls[format + "_snet"] = snet_dl_url
